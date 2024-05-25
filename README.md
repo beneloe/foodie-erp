@@ -6,30 +6,28 @@ Foodie ERP is an enterprise resource planning software for small, pre-launch foo
 ## Installation
 1. Clone the repository: `git clone https://github.com/beneloe/foodie-erp.git`
 2. Navigate to the project directory: `cd foodie-erp`
+3. Install dependencies: `npm install && cd frontend && npm install`
 
 ## Start the App
 
-### Backend Server
+### Run Backend
 
-1. Navigate to the project directory:
-   `cd /path/to/foodie-erp`
+Start backend: `npm run start:backend`
 
-2. Install dependencies:
-    `npm install`
+### Run Frontend
 
-3. Start backend server:
-    `node backend/index.js`
+Start frontend: `npm run start:frontend`
 
-### Frontend Server
+### Run Backend & Frontend
 
-1. Navigate to the project directory:
-   `cd /path/to/foodie-erp`
+Start backend and frontend: `npm start`
 
-2. Install dependencies:
-    `npm install`
+## Testing the App
 
-3. Navigate to the frontend directory:
-   `cd frontend`
+### Test Backend
 
-4. Start frontend server:
-    `npm start`
+Run backend test: `cd backend && npm test`
+
+### Test Frontend
+
+Run fronted test: `cd frontend && npm test`
