@@ -1,3 +1,6 @@
+-- Drop all existing tables
+DROP TABLE IF EXISTS service_cost_items, service_costs, salaries, other_cost_items, other_costs, sales_order_items, sales_orders, production_order_items, production_orders, purchase_order_items, purchase_orders, inventory_item, users CASCADE;
+
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(255) NOT NULL UNIQUE,
@@ -21,15 +24,15 @@ CREATE TABLE purchase_orders (
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  received BOOLEAN NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE SET NULL
+  received BOOLEAN NOT NULL
 );
 
 CREATE TABLE purchase_order_items (
   id SERIAL PRIMARY KEY,
-  purchase_order_id INTEGER NOT NULL REFERENCES purchase_orders(id) ON DELETE CASCADE,
-  inventory_item_id INTEGER NOT NULL REFERENCES inventory_item(id) ON DELETE CASCADE,
+  purchase_order_id INTEGER REFERENCES purchase_orders(id) ON DELETE CASCADE,
+  inventory_item_id INTEGER REFERENCES inventory_item(id) ON DELETE CASCADE,
   quantity NUMERIC(10, 2) NOT NULL,
+  unit VARCHAR(50) NOT NULL,  -- Add unit
   unit_price NUMERIC(10, 2) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL
 );
@@ -39,15 +42,17 @@ CREATE TABLE production_orders (
   date DATE NOT NULL,
   product_name VARCHAR(255) NOT NULL,
   quantity NUMERIC(10, 2) NOT NULL,
-  status VARCHAR(50) NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE SET NULL
+  status VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE production_order_items (
   id SERIAL PRIMARY KEY,
-  production_order_id INTEGER NOT NULL REFERENCES production_orders(id) ON DELETE CASCADE,
-  inventory_item_id INTEGER NOT NULL REFERENCES inventory_item(id) ON DELETE CASCADE,
-  quantity_used NUMERIC(10, 2) NOT NULL
+  production_order_id INTEGER REFERENCES production_orders(id) ON DELETE CASCADE,
+  inventory_item_id INTEGER REFERENCES inventory_item(id) ON DELETE CASCADE,
+  quantity_used NUMERIC(10, 2) NOT NULL,
+  unit VARCHAR(50) NOT NULL,
+  in_inventory NUMERIC(10, 2) NOT NULL,
+  in_build NUMERIC(10, 2) NOT NULL
 );
 
 CREATE TABLE sales_orders (
@@ -56,15 +61,15 @@ CREATE TABLE sales_orders (
   customer VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  delivered BOOLEAN NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE SET NULL
+  delivered BOOLEAN NOT NULL
 );
 
 CREATE TABLE sales_order_items (
   id SERIAL PRIMARY KEY,
-  sales_order_id INTEGER NOT NULL REFERENCES sales_orders(id) ON DELETE CASCADE,
-  inventory_item_id INTEGER NOT NULL REFERENCES inventory_item(id) ON DELETE CASCADE,
+  sales_order_id INTEGER REFERENCES sales_orders(id) ON DELETE CASCADE,
+  inventory_item_id INTEGER REFERENCES inventory_item(id) ON DELETE CASCADE,
   quantity NUMERIC(10, 2) NOT NULL,
+  unit VARCHAR(50) NOT NULL,
   unit_price NUMERIC(10, 2) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL
 );
@@ -75,7 +80,17 @@ CREATE TABLE other_costs (
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE SET NULL
+  status VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE other_cost_items (
+  id SERIAL PRIMARY KEY,
+  other_cost_id INTEGER REFERENCES other_costs(id) ON DELETE CASCADE,
+  line_item VARCHAR(255) NOT NULL,
+  quantity NUMERIC(10, 2) NOT NULL,
+  unit VARCHAR(50) NOT NULL,
+  unit_price NUMERIC(10, 2) NOT NULL,
+  amount NUMERIC(10, 2) NOT NULL
 );
 
 CREATE TABLE salaries (
@@ -85,7 +100,9 @@ CREATE TABLE salaries (
   employee VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE SET NULL
+  hours_worked NUMERIC(10, 2) NOT NULL,
+  unit VARCHAR(50) NOT NULL,
+  hourly_rate NUMERIC(10, 2) NOT NULL
 );
 
 CREATE TABLE service_costs (
@@ -94,13 +111,12 @@ CREATE TABLE service_costs (
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  status VARCHAR(50) NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE SET NULL
+  status VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE service_cost_items (
   id SERIAL PRIMARY KEY,
-  service_cost_id INTEGER NOT NULL REFERENCES service_costs(id) ON DELETE CASCADE,
+  service_cost_id INTEGER REFERENCES service_costs(id) ON DELETE CASCADE,
   service_description VARCHAR(255) NOT NULL,
   quantity NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
