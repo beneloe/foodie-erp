@@ -1,6 +1,7 @@
 -- Drop all existing tables
 DROP TABLE IF EXISTS service_cost_items, service_costs, salaries, other_cost_items, other_costs, sales_order_items, sales_orders, production_order_items, production_orders, purchase_order_items, purchase_orders, inventory_item, users CASCADE;
 
+-- Create tables
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(255) NOT NULL UNIQUE,
@@ -10,7 +11,7 @@ CREATE TABLE users (
 
 CREATE TABLE inventory_item (
   id SERIAL PRIMARY KEY,
-  item_name VARCHAR(255) NOT NULL,
+  item_name VARCHAR(255) NOT NULL UNIQUE,
   stock NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
   price NUMERIC(10, 2),
@@ -24,7 +25,8 @@ CREATE TABLE purchase_orders (
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  received BOOLEAN NOT NULL
+  received BOOLEAN NOT NULL,
+  UNIQUE(date, vendor)
 );
 
 CREATE TABLE purchase_order_items (
@@ -32,15 +34,16 @@ CREATE TABLE purchase_order_items (
   purchase_order_id INTEGER REFERENCES purchase_orders(id) ON DELETE CASCADE,
   inventory_item_id INTEGER REFERENCES inventory_item(id) ON DELETE CASCADE,
   quantity NUMERIC(10, 2) NOT NULL,
-  unit VARCHAR(50) NOT NULL,  -- Add unit
+  unit VARCHAR(50) NOT NULL,
   unit_price NUMERIC(10, 2) NOT NULL,
-  amount NUMERIC(10, 2) NOT NULL
+  amount NUMERIC(10, 2) NOT NULL,
+  UNIQUE(purchase_order_id, inventory_item_id)
 );
 
 CREATE TABLE production_orders (
   id SERIAL PRIMARY KEY,
   date DATE NOT NULL,
-  product_name VARCHAR(255) NOT NULL,
+  product_name VARCHAR(255) NOT NULL UNIQUE,
   quantity NUMERIC(10, 2) NOT NULL,
   status VARCHAR(50) NOT NULL
 );
@@ -52,7 +55,8 @@ CREATE TABLE production_order_items (
   quantity_used NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
   in_inventory NUMERIC(10, 2) NOT NULL,
-  in_build NUMERIC(10, 2) NOT NULL
+  in_build NUMERIC(10, 2) NOT NULL,
+  UNIQUE(production_order_id, inventory_item_id)
 );
 
 CREATE TABLE sales_orders (
@@ -61,7 +65,8 @@ CREATE TABLE sales_orders (
   customer VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  delivered BOOLEAN NOT NULL
+  delivered BOOLEAN NOT NULL,
+  UNIQUE(date, customer)
 );
 
 CREATE TABLE sales_order_items (
@@ -71,7 +76,8 @@ CREATE TABLE sales_order_items (
   quantity NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
   unit_price NUMERIC(10, 2) NOT NULL,
-  amount NUMERIC(10, 2) NOT NULL
+  amount NUMERIC(10, 2) NOT NULL,
+  UNIQUE(sales_order_id, inventory_item_id)
 );
 
 CREATE TABLE other_costs (
@@ -80,7 +86,8 @@ CREATE TABLE other_costs (
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  status VARCHAR(50) NOT NULL
+  status VARCHAR(50) NOT NULL,
+  UNIQUE(date, vendor)
 );
 
 CREATE TABLE other_cost_items (
@@ -90,7 +97,8 @@ CREATE TABLE other_cost_items (
   quantity NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
   unit_price NUMERIC(10, 2) NOT NULL,
-  amount NUMERIC(10, 2) NOT NULL
+  amount NUMERIC(10, 2) NOT NULL,
+  UNIQUE(other_cost_id, line_item)
 );
 
 CREATE TABLE salaries (
@@ -102,7 +110,8 @@ CREATE TABLE salaries (
   paid BOOLEAN NOT NULL,
   hours_worked NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
-  hourly_rate NUMERIC(10, 2) NOT NULL
+  hourly_rate NUMERIC(10, 2) NOT NULL,
+  UNIQUE(date, period, employee)
 );
 
 CREATE TABLE service_costs (
@@ -111,7 +120,8 @@ CREATE TABLE service_costs (
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL,
   paid BOOLEAN NOT NULL,
-  status VARCHAR(50) NOT NULL
+  status VARCHAR(50) NOT NULL,
+  UNIQUE(date, vendor)
 );
 
 CREATE TABLE service_cost_items (
@@ -121,7 +131,8 @@ CREATE TABLE service_cost_items (
   quantity NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
   unit_price NUMERIC(10, 2) NOT NULL,
-  amount NUMERIC(10, 2) NOT NULL
+  amount NUMERIC(10, 2) NOT NULL,
+  UNIQUE(service_cost_id, service_description)
 );
 
 -- This function updates inventory stock with purchase orders, production orders, and sales orders.
