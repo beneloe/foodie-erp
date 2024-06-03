@@ -123,3 +123,54 @@ CREATE TABLE service_cost_items (
   unit_price NUMERIC(10, 2) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL
 );
+
+-- This function updates inventory stock with purchase orders, production orders, and sales orders.
+CREATE OR REPLACE FUNCTION update_inventory_stock() RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    IF TG_TABLE_NAME = 'purchase_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock + NEW.quantity
+      WHERE id = NEW.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'production_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock - NEW.quantity_used
+      WHERE id = NEW.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock - NEW.quantity
+      WHERE id = NEW.inventory_item_id;
+    END IF;
+  ELSIF TG_OP = 'DELETE' THEN
+    IF TG_TABLE_NAME = 'purchase_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock - OLD.quantity
+      WHERE id = OLD.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'production_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock + OLD.quantity_used
+      WHERE id = OLD.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock + OLD.quantity
+      WHERE id = OLD.inventory_item_id;
+    END IF;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to call update_inventory_stock with a purchase
+CREATE TRIGGER trg_update_inventory_purchase
+AFTER INSERT OR DELETE ON purchase_order_items
+FOR EACH ROW EXECUTE FUNCTION update_inventory_stock();
+
+-- Trigger to call update_inventory_stock with a production
+CREATE TRIGGER trg_update_inventory_production
+AFTER INSERT OR DELETE ON production_order_items
+FOR EACH ROW EXECUTE FUNCTION update_inventory_stock();
+
+-- Trigger to call update_inventory_stock with a sale
+CREATE TRIGGER trg_update_inventory_sales
+AFTER INSERT OR DELETE ON sales_order_items
+FOR EACH ROW EXECUTE FUNCTION update_inventory_stock();
