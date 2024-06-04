@@ -1,5 +1,4 @@
-const { Pool } = require('pg');
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const { pool } = require('../config/db');
 	
 const createItem = async (item_name, stock, unit, price, starting_quantity, picture) => {
 const res = await pool.query(
