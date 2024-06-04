@@ -32,6 +32,14 @@ Foodie ERP is an enterprise resource planning software for small, pre-launch foo
     CREATE USER admin WITH ENCRYPTED PASSWORD 'admin';
     GRANT ALL PRIVILEGES ON DATABASE foodie TO admin;
     ````
+6. Run the `setup.sql` script to create the database schema:
+    ```
+    psql -U admin -d foodie -f scripts/setup.sql
+    ````
+7. Run the `seed.sql` script to create sample database entries:
+    ```
+    psql -U admin -d foodie -f scripts/seed.sql
+    ````
 
 ## Start the App
 
