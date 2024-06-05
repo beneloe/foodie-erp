@@ -9,7 +9,11 @@ router.post('/add', async (req, res) => {
     res.status(201).json(newItem);
   } catch (error) {
     console.error('Error creating item:', error);
-    res.status(500).json({ error: 'Failed to create item' });
+    if (error.code === '23505') {
+      res.status(400).json({ error: 'Item with this name already exists' });
+    } else {
+      res.status(500).json({ error: 'Failed to create item' });
+    }
   }
 });
 
