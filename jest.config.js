@@ -1,5 +1,7 @@
 module.exports = {
-    setupFiles: ['dotenv/config'],
-    testEnvironment: 'node',
-  };
-  
+  transform: {
+    "^.+\\.[tj]sx?$": "babel-jest"
+  },
+  moduleFileExtensions: ["js", "jsx"],
+  testEnvironment: "jsdom"
+};
