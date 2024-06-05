@@ -18,7 +18,7 @@ INSERT INTO users (username, password, email) VALUES ('admin', 'password', 'admi
 
 INSERT INTO inventory_item (item_name, stock, unit, price, starting_quantity, picture)
 VALUES 
-('Bread', 30000, 'grams', 0.00, 20000, 'picture.jpeg'),
+('Bread', 30000, 'grams', 0.01, 20000, 'picture.jpeg'),
 ('Lettuce', 750, 'grams', 0.05, 500, 'picture.jpeg'),
 ('Tomato', 450, 'grams', 0.10, 300, 'picture.jpeg'),
 ('Cheese', 3000, 'grams', 0.03, 2000, 'picture.jpeg'),
