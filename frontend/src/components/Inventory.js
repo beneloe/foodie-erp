@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Inventory = () => {
   const [items, setItems] = useState([]);
@@ -12,11 +13,27 @@ const Inventory = () => {
 
   return (
     <div>
-      {items.map((item, index) => (
-        <div key={index}>
-          {item.item_name}: Stock: {item.stock} Unit: {item.unit} Price: ${item.price} Starting Quantity: {item.starting_quantity}
-        </div>
-      ))}
+      <h1>Inventory</h1>
+      <input type="text" placeholder="Search Inventory..." />
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{item.item_name}</td>
+              <td>{item.stock}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <Link to="/add-item">Add New</Link>
     </div>
   );
 };
