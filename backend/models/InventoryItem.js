@@ -1,4 +1,4 @@
-const pool = require('../config/db'); // Update the path if necessary
+const pool = require('../config/db');
 
 const createItem = async (itemName, stock, unit, price, startingQuantity, picture) => {
   const query = `

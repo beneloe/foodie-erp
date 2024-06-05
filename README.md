@@ -70,7 +70,7 @@ http://localhost:3000
 Run backend test:
 ```sh
 cd backend
-npm test
+jest
 ```
 
 ### Test Frontend
