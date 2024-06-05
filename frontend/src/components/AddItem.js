@@ -32,7 +32,7 @@ const AddItem = () => {
       console.error('There was an error adding the item!', error);
     });
   };
-
+  
   return (
     <form onSubmit={handleSubmit}>
       <div>
