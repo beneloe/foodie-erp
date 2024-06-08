@@ -33,7 +33,7 @@ const Inventory = () => {
           ))}
         </tbody>
       </table>
-      <Link to="/add-item">Add New</Link>
+      <Link to="/inventory/create">Add New</Link>
     </div>
   );
 };

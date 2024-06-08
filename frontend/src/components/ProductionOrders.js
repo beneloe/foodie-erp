@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const ProductionOrders = () => {
   const [productionOrders, setProductionOrders] = useState([]);
@@ -33,6 +34,7 @@ const ProductionOrders = () => {
           ))}
         </tbody>
       </table>
+      <Link to="/production/create">Add New</Link>
     </div>
   );
 };
