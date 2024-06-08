@@ -6,7 +6,7 @@ import Inventory from '../Inventory';
 beforeEach(() => {
   global.fetch = jest.fn(() =>
     Promise.resolve({
-      json: () => Promise.resolve([{ item_name: 'Tomato', stock: 450, unit: 'grams', price: 0.1, starting_quantity: 300 }]),
+      json: () => Promise.resolve([{ item_name: 'Tomato', stock: 450, unit: 'grams', price: 0.1 }]),
     })
   );
 });
@@ -19,7 +19,7 @@ afterEach(() => {
 test('fetches and displays inventory items', async () => {
   render(<Inventory />);
   await waitFor(() => {
-    const item = screen.getByText(/Tomato: Stock: 450 Unit: grams Price: \$0.1 Starting Quantity: 300/);
+    const item = screen.getByText(/Tomato: Stock: 450 Unit: grams Price: \$0.1 /);
     expect(item).toBeInTheDocument();
   });
 });
