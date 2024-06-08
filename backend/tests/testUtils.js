@@ -8,7 +8,6 @@ const setupDatabase = async () => {
       stock NUMERIC(10, 2) NOT NULL,
       unit VARCHAR(50) NOT NULL,
       price NUMERIC(10, 2),
-      starting_quantity NUMERIC(10, 2),
       picture VARCHAR(255)
     );
     CREATE TABLE IF NOT EXISTS purchase_orders (
@@ -43,8 +42,6 @@ const setupDatabase = async () => {
       inventory_item_id INTEGER REFERENCES inventory_item(id) ON DELETE CASCADE,
       quantity_used NUMERIC(10, 2) NOT NULL,
       unit VARCHAR(50) NOT NULL,
-      in_inventory NUMERIC(10, 2) NOT NULL,
-      in_build NUMERIC(10, 2) NOT NULL,
       UNIQUE(production_order_id, inventory_item_id)
     );
     CREATE TABLE IF NOT EXISTS sales_orders (
@@ -69,8 +66,8 @@ const setupDatabase = async () => {
   `);
 
   await pool.query(`
-    INSERT INTO inventory_item (id, item_name, stock, unit, price, starting_quantity, picture)
-    VALUES (1, 'Test Item', 100, 'pcs', 10, 100, 'test.jpg')
+    INSERT INTO inventory_item (id, item_name, stock, unit, price, picture)
+    VALUES (1, 'Test Item', 100, 'pcs', 10, 'test.jpg')
     ON CONFLICT (id) DO NOTHING;
   `);
 };

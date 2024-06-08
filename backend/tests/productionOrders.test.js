@@ -28,9 +28,7 @@ describe('POST /api/production-orders/add', () => {
           {
             inventory_item_id: 1,
             quantity_used: 20.0,
-            unit: 'pcs',
-            in_inventory: 30.0,
-            in_build: 20.0,
+            unit: 'pcs'
           },
         ],
       });
