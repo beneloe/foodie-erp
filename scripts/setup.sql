@@ -15,7 +15,6 @@ CREATE TABLE inventory_item (
   stock NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
   price NUMERIC(10, 2),
-  starting_quantity NUMERIC(10, 2),
   picture VARCHAR(255)
 );
 
@@ -43,7 +42,7 @@ CREATE TABLE purchase_order_items (
 CREATE TABLE production_orders (
   id SERIAL PRIMARY KEY,
   date DATE NOT NULL,
-  product_name VARCHAR(255) NOT NULL UNIQUE,
+  product_name VARCHAR(255) NOT NULL,
   quantity NUMERIC(10, 2) NOT NULL,
   status VARCHAR(50) NOT NULL
 );
@@ -54,8 +53,6 @@ CREATE TABLE production_order_items (
   inventory_item_id INTEGER REFERENCES inventory_item(id) ON DELETE CASCADE,
   quantity_used NUMERIC(10, 2) NOT NULL,
   unit VARCHAR(50) NOT NULL,
-  in_inventory NUMERIC(10, 2) NOT NULL,
-  in_build NUMERIC(10, 2) NOT NULL,
   UNIQUE(production_order_id, inventory_item_id)
 );
 
@@ -147,6 +144,9 @@ BEGIN
       UPDATE inventory_item
       SET stock = stock - NEW.quantity_used
       WHERE id = NEW.inventory_item_id;
+      UPDATE inventory_item
+      SET stock = stock + (SELECT quantity FROM production_orders WHERE id = NEW.production_order_id)
+      WHERE item_name = (SELECT product_name FROM production_orders WHERE id = NEW.production_order_id);
     ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
       UPDATE inventory_item
       SET stock = stock - NEW.quantity
@@ -161,6 +161,9 @@ BEGIN
       UPDATE inventory_item
       SET stock = stock + OLD.quantity_used
       WHERE id = OLD.inventory_item_id;
+      UPDATE inventory_item
+      SET stock = stock - (SELECT quantity FROM production_orders WHERE id = OLD.production_order_id)
+      WHERE item_name = (SELECT product_name FROM production_orders WHERE id = OLD.production_order_id);
     ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
       UPDATE inventory_item
       SET stock = stock + OLD.quantity
