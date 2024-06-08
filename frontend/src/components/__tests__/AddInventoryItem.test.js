@@ -10,5 +10,5 @@ global.fetch = jest.fn(() =>
 
 test('renders AddInventoryItem component', () => {
   render(<AddInventoryItem />);
-  expect(screen.getByText(/Add Item/i)).toBeInTheDocument();
+  expect(screen.getByText(/Add New Item/i)).toBeInTheDocument();
 });

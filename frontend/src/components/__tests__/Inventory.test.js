@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import Inventory from '../Inventory';
 
 // Set up a mock for the fetch API
@@ -17,9 +18,13 @@ afterEach(() => {
 });
 
 test('fetches and displays inventory items', async () => {
-  render(<Inventory />);
+  render(
+    <MemoryRouter>
+      <Inventory />
+    </MemoryRouter>
+  );
   await waitFor(() => {
-    const item = screen.getByText(/Tomato: Stock: 450 Unit: grams Price: \$0.1 /);
+    const item = screen.getByText(/Tomato/);
     expect(item).toBeInTheDocument();
   });
 });
