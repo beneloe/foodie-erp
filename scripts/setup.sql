@@ -15,8 +15,7 @@ CREATE TABLE inventory_item (
   item_name VARCHAR(255) NOT NULL UNIQUE,
   stock NUMERIC(10, 2) NOT NULL CHECK (stock >= 0),
   unit VARCHAR(50) NOT NULL,
-  price NUMERIC(10, 2) CHECK (price >= 0),
-  picture VARCHAR(255)
+  price NUMERIC(10, 2) CHECK (price >= 0)
 );
 
 -- Create purchase_orders table

@@ -16,15 +16,15 @@ DELETE FROM users;
 -- Populate database with sample data
 INSERT INTO users (username, password, email) VALUES ('admin', 'password', 'admin@admin.com');
 
-INSERT INTO inventory_item (item_name, stock, unit, price, picture)
+INSERT INTO inventory_item (item_name, stock, unit, price)
 VALUES 
-('Bread', 30000, 'grams', 0.01, 'picture.jpeg'),
-('Lettuce', 750, 'grams', 0.05, 'picture.jpeg'),
-('Tomato', 450, 'grams', 0.10, 'picture.jpeg'),
-('Cheese', 3000, 'grams', 0.03, 'picture.jpeg'),
-('Ham', 4500, 'grams', 0.05, 'picture.jpeg'),
-('Mayonnaise', 1500, 'grams', 0.01, 'picture.jpeg'),
-('Sandwich', 0, 'pieces', 5.00, 'picture.jpeg');
+('Bread', 30000, 'grams', 0.01),
+('Lettuce', 750, 'grams', 0.05),
+('Tomato', 450, 'grams', 0.10),
+('Cheese', 3000, 'grams', 0.03),
+('Ham', 4500, 'grams', 0.05),
+('Mayonnaise', 1500, 'grams', 0.01),
+('Sandwich', 0, 'pieces', 5.00);
 
 DO $$ DECLARE purchase_order_id INTEGER;
 BEGIN

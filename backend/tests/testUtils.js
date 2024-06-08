@@ -7,8 +7,7 @@ const setupDatabase = async () => {
       item_name VARCHAR(255) NOT NULL UNIQUE,
       stock NUMERIC(10, 2) NOT NULL,
       unit VARCHAR(50) NOT NULL,
-      price NUMERIC(10, 2),
-      picture VARCHAR(255)
+      price NUMERIC(10, 2)
     );
     CREATE TABLE IF NOT EXISTS purchase_orders (
       id SERIAL PRIMARY KEY,
@@ -66,8 +65,8 @@ const setupDatabase = async () => {
   `);
 
   await pool.query(`
-    INSERT INTO inventory_item (id, item_name, stock, unit, price, picture)
-    VALUES (1, 'Test Item', 100, 'pcs', 10, 'test.jpg')
+    INSERT INTO inventory_item (id, item_name, stock, unit, price)
+    VALUES (1, 'Test Item', 100, 'pcs', 10)
     ON CONFLICT (id) DO NOTHING;
   `);
 };
