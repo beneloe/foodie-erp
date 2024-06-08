@@ -198,10 +198,14 @@ AFTER INSERT OR DELETE ON purchase_order_items
 FOR EACH ROW EXECUTE FUNCTION update_inventory_stock();
 
 -- Trigger to call update_inventory_stock with a production
-DROP TRIGGER IF EXISTS trg_update_inventory_production ON production_orders;
-
 CREATE TRIGGER trg_update_inventory_production
 AFTER INSERT OR DELETE ON production_orders
+FOR EACH ROW EXECUTE FUNCTION update_inventory_stock();
+
+DROP TRIGGER IF EXISTS trg_update_inventory_production_items ON production_order_items;
+
+CREATE TRIGGER trg_update_inventory_production_items
+AFTER INSERT OR DELETE ON production_order_items
 FOR EACH ROW EXECUTE FUNCTION update_inventory_stock();
 
 -- Trigger to call update_inventory_stock with a sale
