@@ -11,7 +11,11 @@ const createPurchaseOrderItem = async (purchaseOrderId, inventoryItemId, quantit
 };
 
 const getAllPurchaseOrderItems = async () => {
-  const query = 'SELECT * FROM purchase_order_items;';
+  const query = `
+    SELECT poi.*, ii.item_name
+    FROM purchase_order_items poi
+    JOIN inventory_item ii ON poi.inventory_item_id = ii.id;
+  `;
   const { rows } = await pool.query(query);
   return rows;
 };
