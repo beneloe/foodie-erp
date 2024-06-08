@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const PurchaseOrders = () => {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
@@ -53,6 +54,7 @@ const PurchaseOrders = () => {
           ))}
         </tbody>
       </table>
+      <Link to="/purchases/create">Add New</Link>
     </div>
   );
 };
