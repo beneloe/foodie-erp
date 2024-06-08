@@ -8,7 +8,7 @@ router.post('/add', async (req, res) => {
   try {
     const productionOrder = await createProductionOrder(date, product_name, quantity, status);
     for (const item of items) {
-      await createProductionOrderItem(productionOrder.id, item.inventory_item_id, item.quantity_used, item.unit, item.in_inventory, item.in_build);
+      await createProductionOrderItem(productionOrder.id, item.inventory_item_id, item.quantity_used, item.unit);
     }
     res.status(201).json(productionOrder);
   } catch (error) {

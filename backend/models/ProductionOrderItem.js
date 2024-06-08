@@ -1,11 +1,11 @@
 const pool = require('../config/db');
 
-const createProductionOrderItem = async (productionOrderId, inventoryItemId, quantityUsed, unit, inInventory, inBuild) => {
+const createProductionOrderItem = async (productionOrderId, inventoryItemId, quantityUsed, unit) => {
   const query = `
-    INSERT INTO production_order_items (production_order_id, inventory_item_id, quantity_used, unit, in_inventory, in_build)
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+    INSERT INTO production_order_items (production_order_id, inventory_item_id, quantity_used, unit)
+    VALUES ($1, $2, $3, $4) RETURNING *;
   `;
-  const values = [productionOrderId, inventoryItemId, quantityUsed, unit, inInventory, inBuild];
+  const values = [productionOrderId, inventoryItemId, quantityUsed, unit];
   const { rows } = await pool.query(query, values);
   return rows[0];
 };
