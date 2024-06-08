@@ -38,3 +38,12 @@ describe('POST /api/production-orders/add', () => {
     expect(response.body.product_name).toBe('Test Product 2');
   });
 });
+
+describe('GET /api/production-orders', () => {
+  it('should fetch all production orders', async () => {
+    const response = await request(app).get('/api/production-orders');
+    expect(response.status).toBe(200);
+    expect(response.body.productionOrders).toBeInstanceOf(Array);
+    expect(response.body.productionOrderItems).toBeInstanceOf(Array);
+  });
+});
