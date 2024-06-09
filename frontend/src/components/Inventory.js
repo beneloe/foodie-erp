@@ -12,8 +12,8 @@ const Inventory = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Inventory</h1>
+    <div style={{ "margin-top": "50px" }}>
+      <h2>Inventory</h2>
       <input type="text" placeholder="Search Inventory..." />
       <table>
         <thead>
@@ -33,7 +33,9 @@ const Inventory = () => {
           ))}
         </tbody>
       </table>
-      <Link to="/add-item">Add New</Link>
+      <div style={{ "margin-top": "30px" }}>
+        <Link to="/inventory/create">Add New</Link>
+      </div>
     </div>
   );
 };
