@@ -84,7 +84,7 @@ const AddSalesOrder = () => {
   const totalAmount = items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+    <div style={{ "margin-top": "30px", display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
       <form onSubmit={handleSubmit}>
         <h2>Create Sales Order</h2>
         <label>Date</label>

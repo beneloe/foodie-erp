@@ -20,7 +20,7 @@ const SalesOrders = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ "margin-top": "50px" }}>
       <h2>Sales Orders</h2>
       <table>
         <thead>
@@ -52,7 +52,9 @@ const SalesOrders = () => {
           ))}
         </tbody>
       </table>
-      <Link to="/sales/create">Add New</Link>
+      <div style={{ "margin-top": "30px" }}>
+        <Link to="/sales/create">Add New</Link>
+      </div>
     </div>
   );
 };
