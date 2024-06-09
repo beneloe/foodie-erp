@@ -3,9 +3,9 @@ const { createItem, getAllItems } = require('../models/InventoryItem');
 const router = express.Router();
 
 router.post('/add', async (req, res) => {
-  const { item_name, stock, unit, price, starting_quantity, picture } = req.body;
+  const { item_name, stock, unit, price } = req.body;
   try {
-    const newItem = await createItem(item_name, stock, unit, price, starting_quantity, picture);
+    const newItem = await createItem(item_name, stock, unit, price);
     res.status(201).json(newItem);
   } catch (error) {
     console.error('Error creating item:', error);

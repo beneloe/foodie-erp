@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import AddItem from '../AddItem';
+import AddInventoryItem from '../AddInventoryItem';
 
 global.fetch = jest.fn(() =>
   Promise.resolve({
@@ -8,7 +8,7 @@ global.fetch = jest.fn(() =>
   })
 );
 
-test('renders AddItem component', () => {
-  render(<AddItem />);
-  expect(screen.getByText(/Add Item/i)).toBeInTheDocument();
+test('renders AddInventoryItem component', () => {
+  render(<AddInventoryItem />);
+  expect(screen.getByText(/Add New Item/i)).toBeInTheDocument();
 });
