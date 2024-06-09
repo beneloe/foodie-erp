@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import ProductionOrders from '../ProductionOrders';
 
 beforeEach(() => {
@@ -19,7 +20,11 @@ afterEach(() => {
 });
 
 test('renders production orders list', async () => {
-  render(<ProductionOrders />);
+  render(
+    <MemoryRouter>
+      <ProductionOrders />
+    </MemoryRouter>
+  );
 
   await waitFor(() => {
     expect(screen.getByText('Product A')).toBeInTheDocument();
