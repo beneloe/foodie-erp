@@ -11,7 +11,11 @@ const createSalesOrderItem = async (salesOrderId, inventoryItemId, quantity, uni
 };
 
 const getAllSalesOrderItems = async () => {
-  const query = 'SELECT * FROM sales_order_items;';
+  const query = `
+    SELECT soi.*, ii.item_name 
+    FROM sales_order_items soi
+    JOIN inventory_item ii ON soi.inventory_item_id = ii.id;
+  `;
   const { rows } = await pool.query(query);
   return rows;
 };
