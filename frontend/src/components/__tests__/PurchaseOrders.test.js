@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import PurchaseOrders from '../PurchaseOrders';
 
 // Mock fetch API
@@ -39,7 +40,11 @@ afterEach(() => {
 });
 
 test('fetches and displays purchase orders and their items', async () => {
-  render(<PurchaseOrders />);
+  render(
+    <MemoryRouter>
+      <PurchaseOrders />
+    </MemoryRouter>
+  );
 
   await waitFor(() => {
     expect(screen.getByText('Metro')).toBeInTheDocument();
