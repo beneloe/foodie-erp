@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Inventory from './components/Inventory';
 import AddInventoryItem from './components/AddInventoryItem';
 import AddPurchaseOrder from './components/AddPurchaseOrder';
+import PurchaseOrders from './components/PurchaseOrders';
 import ProductionOrders from './components/ProductionOrders';
 import AddProductionOrder from './components/AddProductionOrder';
-import PurchaseOrders from './components/PurchaseOrders';
+import SalesOrders from './components/SalesOrders';
+import AddSalesOrder from './components/AddSalesOrder';
 
 function App() {
   return (
@@ -28,11 +30,13 @@ function App() {
             <Route path="/purchases/create" element={<AddPurchaseOrder />} />
             <Route path="/production" element={<ProductionOrders />} />
             <Route path="/production/create" element={<AddProductionOrder />} />
+            <Route path='/sales' element={<SalesOrders />} />
+            <Route path='/sales/create' element={<AddSalesOrder />} />
           </Routes>
         </main>
       </Router>
     </div>
-  );
+ );
 }
 
 export default App;
