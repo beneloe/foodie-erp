@@ -33,7 +33,7 @@ describe('POST /api/purchase-orders/add', () => {
         vendor: 'Test Vendor',
         amount: 200.0,
         paid: true,
-        received: false,
+        received: true,
         items: [
           {
             inventory_item_id: 1,

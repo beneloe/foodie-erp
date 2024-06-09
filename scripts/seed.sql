@@ -70,7 +70,7 @@ END $$;
 DO $$ DECLARE other_cost_id INTEGER;
 BEGIN
   INSERT INTO other_costs (date, vendor, amount, paid, status)
-  VALUES ('2024-01-31', 'Transporter', 300.00, FALSE, 'done') RETURNING id INTO other_cost_id;
+  VALUES ('2024-01-31', 'Transporter', 300.00, TRUE, 'done') RETURNING id INTO other_cost_id;
 
   INSERT INTO other_cost_items (other_cost_id, line_item, quantity, unit, unit_price, amount)
   VALUES (other_cost_id, 'Transportation', 1, 'service', 300.00, 300.00);
@@ -82,7 +82,7 @@ VALUES ('2024-01-31', '2024-05-01 - 2024-05-31', 'Employee 1', 2000.00, TRUE, 16
 DO $$ DECLARE service_cost_id INTEGER;
 BEGIN
   INSERT INTO service_costs (date, vendor, amount, paid, status)
-  VALUES ('2024-01-31', 'Consultant', 500.00, FALSE, 'done') RETURNING id INTO service_cost_id;
+  VALUES ('2024-01-31', 'Consultant', 500.00, TRUE, 'done') RETURNING id INTO service_cost_id;
 
   INSERT INTO service_cost_items (service_cost_id, service_description, quantity, unit, unit_price, amount)
   VALUES (service_cost_id, 'Consulting', 10, 'hours', 20.00, 200.00);
