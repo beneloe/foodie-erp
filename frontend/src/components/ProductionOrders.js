@@ -12,7 +12,7 @@ const ProductionOrders = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ "margin-top": "50px" }}>
       <h2>Production Orders</h2>
       <table>
         <thead>
@@ -34,7 +34,9 @@ const ProductionOrders = () => {
           ))}
         </tbody>
       </table>
-      <Link to="/production/create">Add New</Link>
+      <div style={{ "margin-top": "30px" }}>
+        <Link to="/production/create">Add New</Link>
+      </div>
     </div>
   );
 };
