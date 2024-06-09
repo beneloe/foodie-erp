@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const SalesOrders = () => {
@@ -15,8 +15,8 @@ const SalesOrders = () => {
       .catch(error => console.error('Error fetching sales orders:', error));
   }, []);
 
-  const getItemsForOrder = (orderId) => {
-    return salesOrderItems.filter(item => item.sales_order_id === orderId);
+  const getOrderItems = (orderId) => {
+    return salesOrderItems.filter((item) => item.sales_order_id === orderId);
   };
 
   return (
@@ -34,21 +34,19 @@ const SalesOrders = () => {
           </tr>
         </thead>
         <tbody>
-          {salesOrders.map(order => (
+          {salesOrders.map((order) => (
             <tr key={order.id}>
-              <td>{new Date(order.date).toLocaleDateString()}</td>
+              <td>{order.date}</td>
               <td>{order.customer}</td>
               <td>{order.amount}</td>
               <td>{order.paid ? 'Yes' : 'No'}</td>
               <td>{order.delivered ? 'Yes' : 'No'}</td>
               <td>
-                <ul>
-                  {getItemsForOrder(order.id).map(item => (
-                    <li key={item.id}>
-                      {item.item_name} - {item.quantity} {item.unit} @ {item.unit_price} each, Amount: {item.amount}
-                    </li>
-                  ))}
-                </ul>
+                {getOrderItems(order.id).map((item) => (
+                  <div key={item.id}>
+                    {item.quantity} {item.unit}
+                  </div>
+                ))}
               </td>
             </tr>
           ))}
