@@ -1,57 +1,35 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import PurchaseOrders from '../PurchaseOrders';
+import AddPurchaseOrder from '../AddPurchaseOrder';
 
-// Mock fetch API
+// Mock the fetch API
 beforeEach(() => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      json: () => Promise.resolve({
-        purchaseOrders: [
-          {
-            id: 1,
-            date: '2023-12-31T23:00:00.000Z',
-            vendor: 'Metro',
-            amount: '500.00',
-            paid: true,
-            received: true
-          }
-        ],
-        purchaseOrderItems: [
-          {
-            id: 1,
-            purchase_order_id: 1,
-            inventory_item_id: 1,
-            item_name: 'Bread',
-            quantity: '20000.00',
-            unit: 'grams',
-            unit_price: '0.01',
-            amount: '200.00'
-          }
-        ]
-      }),
-    })
-  );
+  global.fetch = jest.fn((url) => {
+    if (url.endsWith('/api/inventory')) {
+      return Promise.resolve({
+        json: () => Promise.resolve([
+          { id: 1, item_name: 'Tomato', unit: 'grams', price: 0.1, stock: 100 }
+        ]),
+      });
+    } else if (url.endsWith('/api/purchase-orders/add')) {
+      return Promise.resolve({
+        json: () => Promise.resolve({ id: 1, date: '2024-01-01', vendor: 'Test Vendor', amount: 5.0, paid: true, received: true }),
+      });
+    }
+  });
 });
 
-// Clear fetch mock to avoid issues with other tests
+// Clear fetch mock after each test
 afterEach(() => {
   global.fetch.mockClear();
 });
 
-test('fetches and displays purchase orders and their items', async () => {
-  render(
-    <MemoryRouter>
-      <PurchaseOrders />
-    </MemoryRouter>
-  );
-
+test('renders form and fetches inventory items', async () => {
+  render(<AddPurchaseOrder />);
+  
+  expect(screen.getByText(/Create Purchase Order/i)).toBeInTheDocument();
+  
   await waitFor(() => {
-    expect(screen.getByText('Metro')).toBeInTheDocument();
-  });
-
-  await waitFor(() => {
-    expect(screen.getByText('Bread - 20000.00 grams @ 0.01 each, Amount: 200.00')).toBeInTheDocument();
+    expect(screen.getByText(/Tomato/i)).toBeInTheDocument();
   });
 });
