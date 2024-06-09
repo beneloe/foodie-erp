@@ -33,7 +33,7 @@ describe('POST /api/sales-orders/add', () => {
         customer: 'Test Customer',
         amount: 200.0,
         paid: true,
-        delivered: false,
+        delivered: true,
         items: [
           {
             inventory_item_id: 1,
