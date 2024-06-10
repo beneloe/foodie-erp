@@ -1,5 +1,5 @@
 -- Drop all existing tables
-DROP TABLE IF EXISTS service_cost_items, service_costs, salaries, other_cost_items, other_costs, sales_order_items, sales_orders, production_order_items, production_orders, purchase_order_items, purchase_orders, inventory_item, users CASCADE;
+DROP TABLE IF EXISTS service_cost_items, service_costs, staffing_costs, staffing_cost_items, other_cost_items, other_costs, sales_order_items, sales_orders, production_order_items, production_orders, purchase_order_items, purchase_orders, inventory_item, users CASCADE;
 
 -- Create users table
 CREATE TABLE users (
@@ -106,18 +106,27 @@ CREATE TABLE other_cost_items (
   UNIQUE(other_cost_id, line_item)
 );
 
--- Create salaries table
-CREATE TABLE salaries (
+-- Create staffing costs table
+CREATE TABLE staffing_costs (
   id SERIAL PRIMARY KEY,
   date DATE NOT NULL,
   period VARCHAR(50) NOT NULL,
   employee VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
   paid BOOLEAN NOT NULL,
-  hours_worked NUMERIC(10, 2) NOT NULL CHECK (hours_worked > 0),
-  unit VARCHAR(50) NOT NULL,
-  hourly_rate NUMERIC(10, 2) NOT NULL CHECK (hourly_rate > 0),
   UNIQUE(date, period, employee)
+);
+
+-- Create staffing cost items table
+CREATE TABLE staffing_cost_items (
+  id SERIAL PRIMARY KEY,
+  staffing_cost_id INTEGER REFERENCES staffing_costs(id) ON DELETE CASCADE,
+  line_item VARCHAR(255) NOT NULL,
+  quantity NUMERIC(10, 2) NOT NULL CHECK (quantity > 0),
+  unit VARCHAR(50) NOT NULL,
+  unit_price NUMERIC(10, 2) NOT NULL CHECK (unit_price > 0),
+  amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
+  UNIQUE(staffing_cost_id, line_item)
 );
 
 -- Create service_costs table
