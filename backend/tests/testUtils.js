@@ -62,6 +62,25 @@ const setupDatabase = async () => {
       amount NUMERIC(10, 2) NOT NULL,
       UNIQUE(sales_order_id, inventory_item_id)
     );
+    CREATE TABLE IF NOT EXISTS service_costs (
+      id SERIAL PRIMARY KEY,
+      date DATE NOT NULL,
+      vendor VARCHAR(255) NOT NULL,
+      amount NUMERIC(10, 2) NOT NULL,
+      paid BOOLEAN NOT NULL,
+      status VARCHAR(50) NOT NULL,
+      UNIQUE(date, vendor)
+    );
+    CREATE TABLE IF NOT EXISTS service_cost_items (
+      id SERIAL PRIMARY KEY,
+      service_cost_id INTEGER REFERENCES service_costs(id) ON DELETE CASCADE,
+      service_description VARCHAR(255) NOT NULL,
+      quantity NUMERIC(10, 2) NOT NULL,
+      unit VARCHAR(50) NOT NULL,
+      unit_price NUMERIC(10, 2) NOT NULL,
+      amount NUMERIC(10, 2) NOT NULL,
+      UNIQUE(service_cost_id, service_description)
+    );
   `);
 
   await pool.query(`
@@ -72,6 +91,8 @@ const setupDatabase = async () => {
 };
 
 const teardownDatabase = async () => {
+  await pool.query('DELETE FROM service_cost_items');
+  await pool.query('DELETE FROM service_costs');
   await pool.query('DELETE FROM sales_order_items');
   await pool.query('DELETE FROM sales_orders');
   await pool.query('DELETE FROM production_order_items');
