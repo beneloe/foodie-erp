@@ -10,6 +10,7 @@ const purchaseOrderRoutes = require('./routes/purchaseOrders');
 const productionOrderRoutes = require('./routes/productionOrders');
 const salesOrderRoutes = require('./routes/salesOrders');
 const serviceCostsRoutes = require('./routes/serviceCosts');
+const otherCostsRoutes = require('./routes/otherCosts');
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -20,6 +21,7 @@ app.use('/api/purchase-orders', purchaseOrderRoutes);
 app.use('/api/production-orders', productionOrderRoutes);
 app.use('/api/sales-orders', salesOrderRoutes);
 app.use('/api/service-costs', serviceCostsRoutes);
+app.use('/api/other-costs', otherCostsRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is working');
