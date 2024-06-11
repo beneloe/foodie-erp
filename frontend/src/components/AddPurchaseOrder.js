@@ -110,13 +110,13 @@ const AddPurchaseOrder = () => {
             <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} required />
 
             <label>Unit</label>
-            <input type="text" name="unit" value={item.unit} readOnly />
+            <input type="text" name="unit" value={item.unit} onChange={(e) => handleItemChange(index, e)} required />
 
             <label>Unit Price</label>
-            <input type="number" name="unit_price" value={item.unit_price} readOnly />
+            <input type="number" name="unit_price" value={item.unit_price} onChange={(e) => handleItemChange(index, e)} required />
 
             <label>Amount</label>
-            <input type="number" name="amount" value={item.amount} readOnly />
+            <input type="number" name="amount" value={item.amount} onChange={(e) => handleItemChange(index, e)} required />
           </div>
         ))}
         <button type="button" onClick={handleAddItem}>Add Item</button>
