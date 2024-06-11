@@ -10,6 +10,7 @@ import SalesOrders from './components/SalesOrders';
 import AddSalesOrder from './components/AddSalesOrder';
 import ServiceCosts from './components/ServiceCosts';
 import OtherCosts from './components/OtherCosts';
+import StaffingCosts from './components/StaffingCosts';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Link to="/sales">Sales</Link>
           <Link to="/service">Service Costs</Link>
           <Link to="/other">Other Costs</Link>
+          <Link to="/staffing">Staffing Costs</Link>
         </nav>
         <main>
           <Routes>
@@ -38,6 +40,7 @@ function App() {
             <Route path='/sales/create' element={<AddSalesOrder />} />
             <Route path='/service' element={<ServiceCosts />} />
             <Route path='/other' element={<OtherCosts />} />
+            <Route path='/staffing' element={<StaffingCosts />} />
           </Routes>
         </main>
       </Router>
