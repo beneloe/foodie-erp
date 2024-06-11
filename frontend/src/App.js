@@ -8,6 +8,7 @@ import ProductionOrders from './components/ProductionOrders';
 import AddProductionOrder from './components/AddProductionOrder';
 import SalesOrders from './components/SalesOrders';
 import AddSalesOrder from './components/AddSalesOrder';
+import ServiceCosts from './components/ServiceCosts';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Link to="/purchases">Purchases</Link>
           <Link to="/production">Production Orders</Link>
           <Link to="/sales">Sales</Link>
+          <Link to="/service">Service Costs</Link>
         </nav>
         <main>
           <Routes>
@@ -32,6 +34,7 @@ function App() {
             <Route path="/production/create" element={<AddProductionOrder />} />
             <Route path='/sales' element={<SalesOrders />} />
             <Route path='/sales/create' element={<AddSalesOrder />} />
+            <Route path='/service' element={<ServiceCosts />} />
           </Routes>
         </main>
       </Router>
