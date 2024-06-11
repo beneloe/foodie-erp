@@ -47,14 +47,13 @@ describe('ServiceCosts', () => {
     });
   });
 
-  test('displays a link to add new service cost', () => {
+test('displays a link to add new service cost', () => {
     render(
-      <MemoryRouter>
-        <ServiceCosts />
-      </MemoryRouter>
+        <MemoryRouter>
+            <ServiceCosts />
+        </MemoryRouter>
     );
 
-    expect(screen.getByText('Add New')).toBeInTheDocument();
-    expect(screen.getByText('Add New').closest('a')).toHaveAttribute('href', '/service/create');
-  });
+    expect(screen.getByRole('link', { name: 'Add New' })).toHaveAttribute('href', '/service/create');
+    });  
 });
