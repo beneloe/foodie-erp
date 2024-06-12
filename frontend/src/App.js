@@ -11,6 +11,7 @@ import AddSalesOrder from './components/AddSalesOrder';
 import ServiceCosts from './components/ServiceCosts';
 import AddServiceCost from './components/AddServiceCost';
 import OtherCosts from './components/OtherCosts';
+import AddOtherCost from './components/AddOtherCost';
 import StaffingCosts from './components/StaffingCosts';
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
             <Route path='/service' element={<ServiceCosts />} />
             <Route path='/service/create' element={<AddServiceCost />} />
             <Route path='/other' element={<OtherCosts />} />
+            <Route path='/other/create' element={<AddOtherCost />} />
             <Route path='/staffing' element={<StaffingCosts />} />
           </Routes>
         </main>
