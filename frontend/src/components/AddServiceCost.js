@@ -1,22 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const AddPurchaseOrder = () => {
+const AddServiceCost = () => {
   const [date, setDate] = useState('');
   const [vendor, setVendor] = useState('');
   const [paid, setPaid] = useState(true);
-  const [received, setReceived] = useState(true);
-  const [items, setItems] = useState([{ item_name: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
-  const [inventoryItems, setInventoryItems] = useState([]);
-
-  useEffect(() => {
-    fetch('/api/inventory')
-      .then(response => response.json())
-      .then(data => setInventoryItems(data))
-      .catch(error => console.error('Error fetching inventory items:', error));
-  }, []);
+  const [status, setStatus] = useState('done');
+  const [items, setItems] = useState([{ service_description: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
 
   const handleAddItem = () => {
-    setItems([...items, { item_name: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
+    setItems([...items, { service_description: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
   };
 
   const handleItemChange = (index, event) => {
@@ -24,21 +16,8 @@ const AddPurchaseOrder = () => {
     const newItems = items.slice();
     newItems[index][name] = value;
 
-    if (name === 'item_name') {
-      const selectedItem = inventoryItems.find(item => item.item_name === value);
-      if (selectedItem) {
-        newItems[index].unit = selectedItem.unit;
-        newItems[index].unit_price = selectedItem.price;
-        newItems[index].quantity = Math.min(newItems[index].quantity, selectedItem.stock);
-      } else {
-        newItems[index].unit = '';
-        newItems[index].unit_price = '';
-      }
-    } else if (name === 'quantity') {
-      const selectedItem = inventoryItems.find(item => item.item_name === newItems[index].item_name);
-      if (selectedItem) {
-        newItems[index].amount = (newItems[index].quantity * newItems[index].unit_price).toFixed(2);
-      }
+    if (name === 'quantity' || name === 'unit_price') {
+      newItems[index].amount = (newItems[index].quantity * newItems[index].unit_price).toFixed(2);
     }
 
     setItems(newItems);
@@ -52,9 +31,9 @@ const AddPurchaseOrder = () => {
       vendor,
       amount: items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2),
       paid,
-      received,
+      status,
       items: items.map(item => ({
-        inventory_item_id: inventoryItems.find(i => i.item_name === item.item_name)?.id,
+        service_description: item.service_description,
         quantity: item.quantity,
         unit: item.unit,
         unit_price: item.unit_price,
@@ -62,7 +41,7 @@ const AddPurchaseOrder = () => {
       }))
     };
 
-    fetch('/api/purchase-orders/add', {
+    fetch('/api/service-costs/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,21 +53,21 @@ const AddPurchaseOrder = () => {
         setDate('');
         setVendor('');
         setPaid(true);
-        setReceived(true);
-        setItems([{ item_name: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
-        console.log('Purchase Order created:', data);
+        setStatus('done');
+        setItems([{ service_description: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
+        console.log('Service Cost created:', data);
       })
       .catch((error) => {
-        console.error('Error creating Purchase Order:', error);
+        console.error('Error creating Service Cost:', error);
       });
   };
 
   const totalAmount = items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2);
 
   return (
-    <div style={{ "margin-top": "30px", display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
+    <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
       <form onSubmit={handleSubmit}>
-        <h2>Create Purchase Order</h2>
+        <h2>Create Service Cost</h2>
         <label>Date</label>
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
 
@@ -98,13 +77,8 @@ const AddPurchaseOrder = () => {
         <h3>Items</h3>
         {items.map((item, index) => (
           <div key={index}>
-            <label>Item Name</label>
-            <select name="item_name" value={item.item_name} onChange={(e) => handleItemChange(index, e)} required>
-              <option value="">Select Item</option>
-              {inventoryItems.map((inventoryItem) => (
-                <option key={inventoryItem.id} value={inventoryItem.item_name}>{inventoryItem.item_name}</option>
-              ))}
-            </select>
+            <label>Service Description</label>
+            <input type="text" name="service_description" value={item.service_description} onChange={(e) => handleItemChange(index, e)} required />
 
             <label>Quantity</label>
             <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} required />
@@ -122,9 +96,9 @@ const AddPurchaseOrder = () => {
         <button type="button" onClick={handleAddItem}>Add Item</button>
         <h3>Total Amount: {totalAmount}</h3>
         <button type="submit">Submit</button>
-      </form>
+        </form>
     </div>
   );
 };
 
-export default AddPurchaseOrder;
+export default AddServiceCost;
