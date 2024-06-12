@@ -13,6 +13,7 @@ import AddServiceCost from './components/AddServiceCost';
 import OtherCosts from './components/OtherCosts';
 import AddOtherCost from './components/AddOtherCost';
 import StaffingCosts from './components/StaffingCosts';
+import AddStaffingCost from './components/AddStaffingCost';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
             <Route path='/other' element={<OtherCosts />} />
             <Route path='/other/create' element={<AddOtherCost />} />
             <Route path='/staffing' element={<StaffingCosts />} />
+            <Route path='/staffing/create' element={<AddStaffingCost />} />
           </Routes>
         </main>
       </Router>
