@@ -1,7 +1,8 @@
 -- Clear all tables
 DELETE FROM service_cost_items;
 DELETE FROM service_costs;
-DELETE FROM salaries;
+DELETE FROM staffing_cost_items;
+DELETE FROM staffing_costs;
 DELETE FROM other_cost_items;
 DELETE FROM other_costs;
 DELETE FROM sales_order_items;
@@ -54,7 +55,6 @@ BEGIN
   (production_order_id, (SELECT id FROM inventory_item WHERE item_name = 'Cheese'), 1000, 'grams'),
   (production_order_id, (SELECT id FROM inventory_item WHERE item_name = 'Ham'), 1500, 'grams'),
   (production_order_id, (SELECT id FROM inventory_item WHERE item_name = 'Mayonnaise'), 500, 'grams');
-
 END $$;
 
 DO $$ DECLARE sales_order_id INTEGER;
@@ -76,8 +76,13 @@ BEGIN
   VALUES (other_cost_id, 'Transportation', 1, 'service', 300.00, 300.00);
 END $$;
 
-INSERT INTO salaries (date, period, employee, amount, paid, hours_worked, unit, hourly_rate)
-VALUES ('2024-01-31', '2024-05-01 - 2024-05-31', 'Employee 1', 2000.00, TRUE, 160, 'hours', 12.50);
+-- Insert staffing costs
+INSERT INTO staffing_costs (date, period, employee, amount, paid)
+VALUES ('2024-01-31', '2024-05-01 - 2024-05-31', 'Employee 1', 2000.00, TRUE);
+
+-- Insert staffing cost items
+INSERT INTO staffing_cost_items (staffing_cost_id, line_item, quantity, unit, unit_price, amount)
+VALUES ((SELECT id FROM staffing_costs WHERE employee = 'Employee 1'), 'work', 160, 'hours', 12.50, 2000.00);
 
 DO $$ DECLARE service_cost_id INTEGER;
 BEGIN
@@ -99,7 +104,8 @@ SELECT * FROM sales_orders;
 SELECT * FROM sales_order_items;
 SELECT * FROM other_costs;
 SELECT * FROM other_cost_items;
-SELECT * FROM salaries;
+SELECT * FROM staffing_costs;
+SELECT * FROM staffing_cost_items;
 SELECT * FROM service_costs;
 SELECT * FROM service_cost_items;
 
@@ -108,7 +114,7 @@ SELECT SUM(amount) AS revenue
 FROM sales_order_items
 WHERE inventory_item_id = (SELECT id FROM inventory_item WHERE item_name = 'Sandwich');
 
--- Calculate total costs with production, purchases, other costs, and salaries
+-- Calculate total costs with production, purchases, other costs, and staffing_costs
 WITH purchase_costs AS (
   SELECT SUM(amount) AS total_purchase_cost
   FROM purchase_order_items
@@ -123,17 +129,17 @@ other_costs AS (
   SELECT SUM(amount) AS total_other_cost
   FROM other_costs
 ),
-salary_costs AS (
-  SELECT SUM(amount) AS total_salary_cost
-  FROM salaries
+staffing_costs AS (
+  SELECT SUM(amount) AS total_staffing_cost
+  FROM staffing_costs
 )
 SELECT 
   purchase_costs.total_purchase_cost,
   production_costs.total_production_cost,
   other_costs.total_other_cost,
-  salary_costs.total_salary_cost,
-  (purchase_costs.total_purchase_cost + production_costs.total_production_cost + other_costs.total_other_cost + salary_costs.total_salary_cost) AS total_cost
-FROM purchase_costs, production_costs, other_costs, salary_costs;
+  staffing_costs.total_staffing_cost,
+  (purchase_costs.total_purchase_cost + production_costs.total_production_cost + other_costs.total_other_cost + staffing_costs.total_staffing_cost) AS total_cost
+FROM purchase_costs, production_costs, other_costs, staffing_costs;
 
 -- Calculate gross profit
 WITH revenue AS (
@@ -146,7 +152,7 @@ total_costs AS (
     (SUM(purchase_order_items.amount) + 
      (SELECT SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) FROM production_order_items WHERE production_order_id = (SELECT id FROM production_orders WHERE product_name = 'Sandwich')) +
      (SELECT SUM(amount) FROM other_costs) +
-     (SELECT SUM(amount) FROM salaries)
+     (SELECT SUM(amount) FROM staffing_costs)
     ) AS total_cost
   FROM purchase_order_items
   WHERE inventory_item_id IN (SELECT id FROM inventory_item WHERE item_name IN ('Bread', 'Lettuce', 'Tomato', 'Cheese', 'Ham', 'Mayonnaise'))
@@ -168,7 +174,7 @@ total_costs AS (
     (SUM(purchase_order_items.amount) + 
      (SELECT SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) FROM production_order_items WHERE production_order_id = (SELECT id FROM production_orders WHERE product_name = 'Sandwich')) +
      (SELECT SUM(amount) FROM other_costs) +
-     (SELECT SUM(amount) FROM salaries)
+     (SELECT SUM(amount) FROM staffing_costs)
     ) AS total_cost
   FROM purchase_order_items
   WHERE inventory_item_id IN (SELECT id FROM inventory_item WHERE item_name IN ('Bread', 'Lettuce', 'Tomato', 'Cheese', 'Ham', 'Mayonnaise'))
@@ -189,7 +195,7 @@ WITH fixed_costs AS (
   FROM other_costs
   UNION ALL
   SELECT SUM(amount)
-  FROM salaries
+  FROM staffing_costs
 ),
 variable_costs_per_unit AS (
   SELECT 

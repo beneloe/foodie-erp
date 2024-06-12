@@ -8,6 +8,12 @@ import ProductionOrders from './components/ProductionOrders';
 import AddProductionOrder from './components/AddProductionOrder';
 import SalesOrders from './components/SalesOrders';
 import AddSalesOrder from './components/AddSalesOrder';
+import ServiceCosts from './components/ServiceCosts';
+import AddServiceCost from './components/AddServiceCost';
+import OtherCosts from './components/OtherCosts';
+import AddOtherCost from './components/AddOtherCost';
+import StaffingCosts from './components/StaffingCosts';
+import AddStaffingCost from './components/AddStaffingCost';
 
 function App() {
   return (
@@ -21,6 +27,9 @@ function App() {
           <Link to="/purchases">Purchases</Link>
           <Link to="/production">Production Orders</Link>
           <Link to="/sales">Sales</Link>
+          <Link to="/service">Service Costs</Link>
+          <Link to="/other">Other Costs</Link>
+          <Link to="/staffing">Staffing Costs</Link>
         </nav>
         <main>
           <Routes>
@@ -32,6 +41,12 @@ function App() {
             <Route path="/production/create" element={<AddProductionOrder />} />
             <Route path='/sales' element={<SalesOrders />} />
             <Route path='/sales/create' element={<AddSalesOrder />} />
+            <Route path='/service' element={<ServiceCosts />} />
+            <Route path='/service/create' element={<AddServiceCost />} />
+            <Route path='/other' element={<OtherCosts />} />
+            <Route path='/other/create' element={<AddOtherCost />} />
+            <Route path='/staffing' element={<StaffingCosts />} />
+            <Route path='/staffing/create' element={<AddStaffingCost />} />
           </Routes>
         </main>
       </Router>
