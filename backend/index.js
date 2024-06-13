@@ -24,6 +24,7 @@ app.use('/api/sales-orders', salesOrderRoutes);
 app.use('/api/service-costs', serviceCostsRoutes);
 app.use('/api/other-costs', otherCostsRoutes);
 app.use('/api/staffing-costs', staffingCostsRoutes);
+app.use('/api/kpis', require('./routes/kpis'));
 
 app.get('/', (req, res) => {
   res.send('API is working');
