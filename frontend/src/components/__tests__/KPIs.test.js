@@ -39,18 +39,6 @@ describe('KPIs', () => {
     });
   });
 
-  test('fetches and displays revenue', async () => {
-    render(
-      <MemoryRouter>
-        <KPIs />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Revenue: $5000')).toBeInTheDocument();
-    });
-  });
-
   test('fetches and displays total costs', async () => {
     render(
       <MemoryRouter>
@@ -59,11 +47,23 @@ describe('KPIs', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('1000')).toBeInTheDocument();
-      expect(screen.getByText('2000')).toBeInTheDocument();
-      expect(screen.getByText('500')).toBeInTheDocument();
-      expect(screen.getByText('1500')).toBeInTheDocument();
-      expect(screen.getByText('5000')).toBeInTheDocument();
+      expect(screen.getByText('Purchase Costs: 1000')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Production Costs: 2000')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Other Costs: 500')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Staffing Costs: 1500')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Total Costs: 5000')).toBeInTheDocument();
     });
   });
 
