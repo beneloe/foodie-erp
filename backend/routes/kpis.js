@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const kpis = require('../models/KPIs');
+const kpis = require('../models/Kpis');
 
 router.get('/revenue', async (req, res) => {
   try {
@@ -32,7 +32,7 @@ router.get('/gross-profit', async (req, res) => {
 router.get('/profit-margin', async (req, res) => {
   try {
     const profitMargin = await kpis.getProfitMargin();
-    res.json({ profitMargin });
+    res.json({ profit_margin: profitMargin });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch profit margin' });
   }
