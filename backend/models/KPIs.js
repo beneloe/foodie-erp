@@ -93,7 +93,10 @@ const getProfitMargin = async () => {
       FROM revenue, total_costs
     )
     SELECT 
-      (gross_profit.gross_profit / revenue.total_revenue) * 100 AS profit_margin
+      CASE 
+        WHEN revenue.total_revenue = 0 THEN 0
+        ELSE (gross_profit.gross_profit / revenue.total_revenue) * 100
+      END AS profit_margin
     FROM gross_profit, revenue;
   `);
   return result.rows[0].profit_margin;
