@@ -12,6 +12,7 @@ const salesOrderRoutes = require('./routes/salesOrders');
 const serviceCostsRoutes = require('./routes/serviceCosts');
 const otherCostsRoutes = require('./routes/otherCosts');
 const staffingCostsRoutes = require('./routes/staffingCosts');
+const kpiRoutes = require('./routes/kpis');
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -24,6 +25,7 @@ app.use('/api/sales-orders', salesOrderRoutes);
 app.use('/api/service-costs', serviceCostsRoutes);
 app.use('/api/other-costs', otherCostsRoutes);
 app.use('/api/staffing-costs', staffingCostsRoutes);
+app.use('/api/kpis', kpiRoutes);
 
 app.get('/', (req, res) => {
   res.send('API is working');
