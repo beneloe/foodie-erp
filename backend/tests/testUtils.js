@@ -119,11 +119,30 @@ const setupDatabase = async () => {
       amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
       UNIQUE(service_cost_id, service_description)
     );
+    CREATE TABLE IF NOT EXISTS kpis (
+      id SERIAL PRIMARY KEY,
+      revenue NUMERIC(10, 2) NOT NULL CHECK (revenue >= 0),
+      total_purchase_cost NUMERIC(10, 2) NOT NULL CHECK (total_purchase_cost >= 0),
+      total_production_cost NUMERIC(10, 2) NOT NULL CHECK (total_production_cost >= 0),
+      total_other_cost NUMERIC(10, 2) NOT NULL CHECK (total_other_cost >= 0),
+      total_staffing_cost NUMERIC(10, 2) NOT NULL CHECK (total_staffing_cost >= 0),
+      total_cost NUMERIC(10, 2) NOT NULL CHECK (total_cost >= 0),
+      gross_profit NUMERIC(10, 2) NOT NULL CHECK (gross_profit >= 0),
+      profit_margin NUMERIC(5, 2) NOT NULL CHECK (profit_margin >= 0),
+      break_even_point NUMERIC(10, 2) NOT NULL CHECK (break_even_point >= 0),
+      date DATE NOT NULL DEFAULT CURRENT_DATE
+    );
   `);
 
   await pool.query(`
     INSERT INTO inventory_item (id, item_name, stock, unit, price)
-    VALUES (1, 'Test Item', 100, 'pcs', 10)
+    VALUES (1, 'Bread', 40000, 'grams', 0.01),
+           (2, 'Lettuce', 1000, 'grams', 0.05),
+           (3, 'Tomato', 600, 'grams', 0.10),
+           (4, 'Cheese', 4000, 'grams', 0.03),
+           (5, 'Ham', 6000, 'grams', 0.05),
+           (6, 'Mayonnaise', 2000, 'grams', 0.01),
+           (7, 'Sandwich', 0, 'pieces', 5.00)
     ON CONFLICT (id) DO NOTHING;
   `);
 };
@@ -142,6 +161,7 @@ const teardownDatabase = async () => {
   await pool.query('DELETE FROM inventory_item');
   await pool.query('DELETE FROM other_cost_items');
   await pool.query('DELETE FROM other_costs');
+  await pool.query('DELETE FROM kpis');
 };
 
 module.exports = { setupDatabase, teardownDatabase };

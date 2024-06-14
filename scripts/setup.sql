@@ -1,5 +1,5 @@
 -- Drop all existing tables
-DROP TABLE IF EXISTS service_cost_items, service_costs, staffing_costs, staffing_cost_items, other_cost_items, other_costs, sales_order_items, sales_orders, production_order_items, production_orders, purchase_order_items, purchase_orders, inventory_item, users CASCADE;
+DROP TABLE IF EXISTS service_cost_items, service_costs, staffing_costs, staffing_cost_items, other_cost_items, other_costs, sales_order_items, sales_orders, production_order_items, production_orders, purchase_order_items, purchase_orders, inventory_item, users, kpis CASCADE;
 
 -- Create users table
 CREATE TABLE users (
@@ -150,6 +150,21 @@ CREATE TABLE service_cost_items (
   unit_price NUMERIC(10, 2) NOT NULL CHECK (unit_price > 0),
   amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
   UNIQUE(service_cost_id, service_description)
+);
+
+-- Create KPIs table
+CREATE TABLE kpis (
+  id SERIAL PRIMARY KEY,
+  revenue NUMERIC(10, 2) NOT NULL CHECK (revenue >= 0),
+  total_purchase_cost NUMERIC(10, 2) NOT NULL CHECK (total_purchase_cost >= 0),
+  total_production_cost NUMERIC(10, 2) NOT NULL CHECK (total_production_cost >= 0),
+  total_other_cost NUMERIC(10, 2) NOT NULL CHECK (total_other_cost >= 0),
+  total_staffing_cost NUMERIC(10, 2) NOT NULL CHECK (total_staffing_cost >= 0),
+  total_cost NUMERIC(10, 2) NOT NULL CHECK (total_cost >= 0),
+  gross_profit NUMERIC(10, 2) NOT NULL CHECK (gross_profit >= 0),
+  profit_margin NUMERIC(5, 2) NOT NULL CHECK (profit_margin >= 0),
+  break_even_point NUMERIC(10, 2) NOT NULL CHECK (break_even_point >= 0),
+  date DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
 -- This function updates inventory stock with purchase orders, production orders, and sales orders.

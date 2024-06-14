@@ -14,6 +14,7 @@ import OtherCosts from './components/OtherCosts';
 import AddOtherCost from './components/AddOtherCost';
 import StaffingCosts from './components/StaffingCosts';
 import AddStaffingCost from './components/AddStaffingCost';
+import KPIs from './components/KPIs';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         </nav>
         <main>
           <Routes>
+            <Route path="/" element={<KPIs />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="inventory/create" element={<AddInventoryItem />} />
             <Route path="/purchases" element={<PurchaseOrders />} />
