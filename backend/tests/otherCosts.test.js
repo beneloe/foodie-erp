@@ -5,7 +5,7 @@ const pool = require('../config/db');
 let server;
 
 beforeAll(async () => {
-  server = app.listen(5004);
+  server = app.listen(5009);
   await setupDatabase();
 });
 
