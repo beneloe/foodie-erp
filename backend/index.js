@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -41,6 +42,7 @@ app.use(
 app.use(helmet.hsts({ maxAge: 63072000 }));
 app.use(helmet.frameguard({ action: 'sameorigin' }));
 app.use(helmet.noSniff());
+app.use(morgan('combined'))
 
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/purchase-orders', purchaseOrderRoutes);
