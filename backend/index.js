@@ -18,6 +18,30 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(helmet());
 
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https:/'],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'self'"],
+      reportUri: ['/csp-violation-report-endpoint'],
+      upgradeInsecureRequests: [],
+      blockAllMixedContent: [],
+      frameAncestors: ["'self'"],
+    },
+  }),
+);
+
+app.use(helmet.hsts({ maxAge: 63072000 }));
+app.use(helmet.frameguard({ action: 'sameorigin' }));
+app.use(helmet.noSniff());
+
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/purchase-orders', purchaseOrderRoutes);
 app.use('/api/production-orders', productionOrderRoutes);
