@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -15,10 +16,7 @@ const otherCostsRoutes = require('./routes/otherCosts');
 const staffingCostsRoutes = require('./routes/staffingCosts');
 const kpiRoutes = require('./routes/kpis');
 
-app.use(bodyParser.json());
-app.use(cors());
 app.use(helmet());
-
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -36,13 +34,25 @@ app.use(
       blockAllMixedContent: [],
       frameAncestors: ["'self'"],
     },
-  }),
+  })
 );
-
 app.use(helmet.hsts({ maxAge: 63072000 }));
 app.use(helmet.frameguard({ action: 'sameorigin' }));
 app.use(helmet.noSniff());
-app.use(morgan('combined'))
+
+app.set('trust proxy', true);
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per window in 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
+
+app.use(bodyParser.json());
+app.use(cors());
+app.use(morgan('combined'));
 
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/purchase-orders', purchaseOrderRoutes);
