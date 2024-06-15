@@ -3,6 +3,7 @@ const { body, validationResult } = require('express-validator');
 const pool = require('../config/db');
 const router = express.Router();
 
+// validation middleware
 const validateInventoryItem = [
   body('item_name').isString().trim().escape().notEmpty().withMessage('Item name is required'),
   body('stock').isFloat({ min: 0.01 }).withMessage('Stock must be a positive number'),
