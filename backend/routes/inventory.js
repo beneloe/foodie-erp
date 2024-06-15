@@ -1,29 +1,42 @@
 const express = require('express');
-const { createItem, getAllItems } = require('../models/InventoryItem');
+const { body, validationResult } = require('express-validator');
+const pool = require('../config/db');
 const router = express.Router();
 
-router.post('/add', async (req, res) => {
+const validateInventoryItem = [
+  body('item_name').isString().trim().escape().notEmpty().withMessage('Item name is required'),
+  body('stock').isFloat({ min: 0.01 }).withMessage('Stock must be a positive number'),
+  body('unit').isString().trim().escape().notEmpty().withMessage('Unit is required'),
+  body('price').isFloat({ min: 0.01 }).withMessage('Price must be a positive number'),
+];
+
+router.post('/add', validateInventoryItem, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { item_name, stock, unit, price } = req.body;
+
   try {
-    const newItem = await createItem(item_name, stock, unit, price);
-    res.status(201).json(newItem);
+    const result = await pool.query(
+      'INSERT INTO inventory_item (item_name, stock, unit, price) VALUES ($1, $2, $3, $4) RETURNING *',
+      [item_name, stock, unit, price]
+    );
+    res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error('Error creating item:', error);
-    if (error.code === '23505') {
-      res.status(400).json({ error: 'Item with this name already exists' });
-    } else {
-      res.status(500).json({ error: 'Failed to create item' });
-    }
+    console.error('Error adding item:', error);
+    res.status(500).json({ error: 'Failed to add item' });
   }
 });
 
 router.get('/', async (req, res) => {
   try {
-    const items = await getAllItems();
-    res.status(200).json(items);
+    const result = await pool.query('SELECT * FROM inventory_item');
+    res.status(200).json(result.rows);
   } catch (error) {
-    console.error('Error fetching items:', error);
-    res.status(500).json({ error: 'Failed to fetch items' });
+    console.error('Error fetching inventory:', error);
+    res.status(500).json({ error: 'Failed to fetch inventory' });
   }
 });
 

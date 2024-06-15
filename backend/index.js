@@ -40,7 +40,7 @@ app.use(helmet.hsts({ maxAge: 63072000 }));
 app.use(helmet.frameguard({ action: 'sameorigin' }));
 app.use(helmet.noSniff());
 
-app.set('trust proxy', true);
+app.set('trust proxy', 'loopback');
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

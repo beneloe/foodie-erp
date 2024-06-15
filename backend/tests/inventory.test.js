@@ -31,3 +31,42 @@ describe('GET /api/inventory', () => {
     expect(response.body[0].item_name).toBe('Test Item');
   });
 });
+
+describe('POST /api/inventory/add', () => {
+  it('should add a new inventory item', async () => {
+    const newItem = {
+      item_name: 'New Item',
+      stock: 50,
+      unit: 'pcs',
+      price: 5.0,
+    };
+
+    const response = await request(app).post('/api/inventory/add').send(newItem);
+    expect(response.status).toBe(201);
+    expect(response.body.item_name).toBe('New Item');
+  });
+
+  it('should not add an item with invalid data', async () => {
+    const invalidItem = {
+      item_name: '',
+      stock: -10,
+      unit: 'pcs',
+      price: -5.0,
+    };
+
+    const response = await request(app).post('/api/inventory/add').send(invalidItem);
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body.errors).toHaveLength(3);
+  });
+
+  it('should not add an item with missing fields', async () => {
+    const missingFieldsItem = {
+      item_name: 'Incomplete Item',
+    };
+
+    const response = await request(app).post('/api/inventory/add').send(missingFieldsItem);
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+  });
+});
