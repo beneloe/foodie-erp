@@ -1,8 +1,7 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import AddSalesOrder from '../AddSalesOrder';
 
-// Mock the fetch API
 beforeEach(() => {
   global.fetch = jest.fn((url) => {
     if (url.endsWith('/api/inventory')) {
@@ -19,7 +18,6 @@ beforeEach(() => {
   });
 });
 
-// Clear fetch mock after each test
 afterEach(() => {
   global.fetch.mockClear();
 });
@@ -32,4 +30,45 @@ test('renders form and fetches inventory items', async () => {
   await waitFor(() => {
     expect(screen.getByText(/Tomato/i)).toBeInTheDocument();
   });
+});
+
+test('shows validation errors if fields are empty', async () => {
+  render(<AddSalesOrder />);
+
+  fireEvent.click(screen.getByRole('button', { name: /Submit/i }));
+
+  await waitFor(() => {
+    expect(screen.getByText('Date is required')).toBeInTheDocument();
+    expect(screen.getByText('Customer is required')).toBeInTheDocument();
+  });
+});
+
+test('shows validation errors if item fields are invalid', async () => {
+  render(<AddSalesOrder />);
+
+  fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2024-01-01' } });
+  fireEvent.change(screen.getByLabelText(/Customer/i), { target: { value: 'Edeka' } });
+
+  fireEvent.click(screen.getByRole('button', { name: /Add Item/i }));
+  fireEvent.click(screen.getByRole('button', { name: /Submit/i }));
+
+  await waitFor(() => {
+    expect(screen.getAllByText('Item name is required').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Quantity must be a positive number').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Unit is required').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Unit price must be a positive number').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Amount must be a positive number').length).toBeGreaterThan(0);
+  });
+});
+
+test('submits form successfully with valid input', async () => {
+  render(<AddSalesOrder />);
+
+  fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2024-01-01' } });
+  fireEvent.change(screen.getByLabelText(/Customer/i), { target: { value: 'Edeka' } });
+
+  fireEvent.change(screen.getByLabelText(/Item Name/i), { target: { value: 'Tomato' } });
+  fireEvent.change(screen.getByLabelText(/Quantity/i), { target: { value: '10' } });
+
+  fireEvent.click(screen.getByRole('button', { name: /Submit/i }));
 });
