@@ -5,9 +5,18 @@ const router = express.Router();
 
 router.post('/add', async (req, res) => {
   const { date, vendor, amount, paid, status, items } = req.body;
+
+  // Input validation
+  if (!date || !vendor || amount <= 0 || paid === undefined || !status || !items || items.length === 0) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
   try {
     const serviceCost = await createServiceCost(date, vendor, amount, paid, status);
     for (const item of items) {
+      if (!item.service_description || item.quantity <= 0 || !item.unit || item.unit_price <= 0 || item.amount <= 0) {
+        return res.status(400).json({ error: 'Invalid input data' });
+      }
       await createServiceCostItem(serviceCost.id, item.service_description, item.quantity, item.unit, item.unit_price, item.amount);
     }
     res.status(201).json(serviceCost);
