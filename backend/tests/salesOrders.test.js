@@ -49,4 +49,20 @@ describe('POST /api/sales-orders/add', () => {
     expect(new Date(response.body.date).toISOString().split('T')[0]).toBe('2024-01-01');
     expect(response.body.customer).toBe('Test Customer');
   });
+
+  it('should return 400 if input data is invalid', async () => {
+    const response = await request(app)
+      .post('/api/sales-orders/add')
+      .send({
+        date: '',
+        customer: '',
+        amount: -200.0,
+        paid: 'true',
+        delivered: 'true',
+        items: [],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Invalid input data');
+  });
 });
