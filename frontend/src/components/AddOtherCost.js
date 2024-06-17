@@ -6,6 +6,7 @@ const AddOtherCost = () => {
   const [paid, setPaid] = useState(true);
   const [status, setStatus] = useState('done');
   const [items, setItems] = useState([{ line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
+  const [errors, setErrors] = useState([]);
 
   const handleAddItem = () => {
     setItems([...items, { line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
@@ -23,8 +24,27 @@ const AddOtherCost = () => {
     setItems(newItems);
   };
 
+  const validateForm = () => {
+    const validationErrors = [];
+
+    if (!date) validationErrors.push('Date is required.');
+    if (!vendor) validationErrors.push('Vendor is required.');
+    items.forEach((item, index) => {
+      if (!item.line_item) validationErrors.push(`Item ${index + 1}: Line item is required.`);
+      if (!item.quantity || item.quantity <= 0) validationErrors.push(`Item ${index + 1}: Quantity must be a positive number.`);
+      if (!item.unit) validationErrors.push(`Item ${index + 1}: Unit is required.`);
+      if (!item.unit_price || item.unit_price <= 0) validationErrors.push(`Item ${index + 1}: Unit price must be a positive number.`);
+      if (!item.amount || item.amount <= 0) validationErrors.push(`Item ${index + 1}: Amount must be a positive number.`);
+    });
+
+    setErrors(validationErrors);
+    return validationErrors.length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     const newOrder = {
       date,
@@ -68,29 +88,36 @@ const AddOtherCost = () => {
     <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
       <form onSubmit={handleSubmit}>
         <h2>Create Other Cost</h2>
-        <label>Date</label>
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+        {errors.length > 0 && (
+          <div style={{ color: 'red' }}>
+            {errors.map((error, index) => (
+              <p key={index}>{error}</p>
+            ))}
+          </div>
+        )}
+        <label htmlFor="date">Date</label>
+        <input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
 
-        <label>Vendor</label>
-        <input type="text" value={vendor} onChange={(e) => setVendor(e.target.value)} required />
+        <label htmlFor="vendor">Vendor</label>
+        <input id="vendor" type="text" value={vendor} onChange={(e) => setVendor(e.target.value)} required />
 
         <h3>Items</h3>
         {items.map((item, index) => (
           <div key={index}>
-            <label>Line Item</label>
-            <input type="text" name="line_item" value={item.line_item} onChange={(e) => handleItemChange(index, e)} required />
+            <label htmlFor={`line_item_${index}`}>Line Item</label>
+            <input id={`line_item_${index}`} type="text" name="line_item" value={item.line_item} onChange={(e) => handleItemChange(index, e)} required />
 
-            <label>Quantity</label>
-            <input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} required />
+            <label htmlFor={`quantity_${index}`}>Quantity</label>
+            <input id={`quantity_${index}`} type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} required />
 
-            <label>Unit</label>
-            <input type="text" name="unit" value={item.unit} onChange={(e) => handleItemChange(index, e)} required />
+            <label htmlFor={`unit_${index}`}>Unit</label>
+            <input id={`unit_${index}`} type="text" name="unit" value={item.unit} onChange={(e) => handleItemChange(index, e)} required />
 
-            <label>Unit Price</label>
-            <input type="number" name="unit_price" value={item.unit_price} onChange={(e) => handleItemChange(index, e)} required />
+            <label htmlFor={`unit_price_${index}`}>Unit Price</label>
+            <input id={`unit_price_${index}`} type="number" name="unit_price" value={item.unit_price} onChange={(e) => handleItemChange(index, e)} required />
 
-            <label>Amount</label>
-            <input type="number" name="amount" value={item.amount} readOnly />
+            <label htmlFor={`amount_${index}`}>Amount</label>
+            <input id={`amount_${index}`} type="number" name="amount" value={item.amount} onChange={(e) => handleItemChange(index, e)} required />
           </div>
         ))}
         <button type="button" onClick={handleAddItem}>Add Item</button>
