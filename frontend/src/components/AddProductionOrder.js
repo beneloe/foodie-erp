@@ -24,7 +24,7 @@ const AddProductionOrder = () => {
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
     const newItems = items.slice();
-    newItems[index][name] = value;
+    newItems[index][name] = name === 'quantity_used' || name === 'unit_price' ? parseFloat(value) : value;
 
     if (name === 'item_name') {
       const selectedItem = inventoryItems.find(item => item.item_name === value);
@@ -37,7 +37,7 @@ const AddProductionOrder = () => {
     if (name === 'quantity_used') {
       const selectedItem = inventoryItems.find(item => item.item_name === newItems[index].item_name);
       if (selectedItem) {
-        newItems[index].amount = (selectedItem.price * value).toFixed(2);
+        newItems[index].amount = (selectedItem.price * parseFloat(value)).toFixed(2);
       }
     }
 
@@ -74,16 +74,18 @@ const AddProductionOrder = () => {
     const newOrder = {
       date,
       product_name: productName,
-      quantity,
+      quantity: parseFloat(quantity),
       status,
       items: items.map(item => ({
         inventory_item_id: inventoryItems.find(i => i.item_name === item.item_name)?.id,
-        quantity_used: item.quantity_used,
+        quantity_used: parseFloat(item.quantity_used),
         unit: item.unit,
-        unit_price: item.unit_price,
-        amount: item.amount
+        unit_price: parseFloat(item.unit_price),
+        amount: parseFloat(item.amount)
       }))
     };
+
+    console.log('Submitting new order:', newOrder);
 
     fetch('/api/production-orders/add', {
       method: 'POST',
@@ -94,13 +96,17 @@ const AddProductionOrder = () => {
     })
       .then(response => response.json())
       .then(data => {
-        setDate('');
-        setProductName('');
-        setQuantity('');
-        setStatus('done');
-        setItems([{ item_name: '', quantity_used: '', unit: '', unit_price: '', amount: '' }]);
-        setTotalAmount(0);
-        console.log('Production Order created:', data);
+        if (data.errors) {
+          setErrors(data.errors);
+        } else {
+          setDate('');
+          setProductName('');
+          setQuantity('');
+          setStatus('done');
+          setItems([{ item_name: '', quantity_used: '', unit: '', unit_price: '', amount: '' }]);
+          setTotalAmount(0);
+          console.log('Production Order created:', data);
+        }
       })
       .catch((error) => {
         console.error('Error creating Production Order:', error);
