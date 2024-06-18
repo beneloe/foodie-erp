@@ -37,6 +37,31 @@ describe('POST /api/production-orders/add', () => {
     expect(new Date(response.body.date).toISOString().split('T')[0]).toBe('2024-01-01');
     expect(response.body.product_name).toBe('Test Product 2');
   });
+
+  it('should return a 400 error if validation fails', async () => {
+    const response = await request(app)
+      .post('/api/production-orders/add')
+      .send({
+        date: 'invalid-date',
+        product_name: '',
+        quantity: -10,
+        status: 'In Progress',
+        items: [
+          {
+            inventory_item_id: 1,
+            quantity_used: -20.0,
+            unit: ''
+          },
+        ],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toContain('Invalid date format.');
+    expect(response.body.errors).toContain('Product name must be a non-empty string and less than 255 characters.');
+    expect(response.body.errors).toContain('Quantity must be a positive number.');
+    expect(response.body.errors).toContain('Item 1: quantity_used must be a positive number.');
+    expect(response.body.errors).toContain('Item 1: unit must be a non-empty string and less than 50 characters.');
+  });
 });
 
 describe('GET /api/production-orders', () => {
