@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import AddProductionOrder from '../AddProductionOrder';
 
 beforeEach(() => {
@@ -24,9 +24,7 @@ afterEach(() => {
 });
 
 test('renders form and fetches inventory items', async () => {
-  await act(async () => {
-    render(<AddProductionOrder />);
-  });
+  render(<AddProductionOrder />);
   
   expect(screen.getByText(/Create Production Order/i)).toBeInTheDocument();
   
@@ -36,9 +34,7 @@ test('renders form and fetches inventory items', async () => {
 });
 
 test('shows validation errors if fields are empty', async () => {
-  await act(async () => {
-    render(<AddProductionOrder />);
-  });
+  render(<AddProductionOrder />);
 
   fireEvent.click(screen.getByRole('button', { name: /Submit/i }));
 
@@ -56,9 +52,7 @@ test('shows validation errors if fields are empty', async () => {
 });
 
 test('shows validation errors if item fields are invalid', async () => {
-  await act(async () => {
-    render(<AddProductionOrder />);
-  });
+  render(<AddProductionOrder />);
 
   fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2024-01-01' } });
   fireEvent.change(screen.getByLabelText(/Product Name/i), { target: { value: 'Test Product' } });
@@ -89,9 +83,7 @@ test('shows validation errors if item fields are invalid', async () => {
 });
 
 test('submits form successfully with valid input', async () => {
-  await act(async () => {
-    render(<AddProductionOrder />);
-  });
+  render(<AddProductionOrder />);
 
   fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2024-01-01' } });
   fireEvent.change(screen.getByLabelText(/Product Name/i), { target: { value: 'Test Product' } });
