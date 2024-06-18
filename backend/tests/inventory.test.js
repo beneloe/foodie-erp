@@ -27,8 +27,8 @@ describe('GET /api/inventory', () => {
   it('should fetch all inventory items', async () => {
     const response = await request(app).get('/api/inventory');
     expect(response.status).toBe(200);
-    expect(response.body).toHaveLength(1);
-    expect(response.body[0].item_name).toBe('Test Item');
+    expect(response.body).toHaveLength(7);
+    expect(response.body[0].item_name).toBe('Bread');
   });
 });
 
