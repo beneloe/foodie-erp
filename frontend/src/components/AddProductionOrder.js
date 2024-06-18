@@ -24,20 +24,29 @@ const AddProductionOrder = () => {
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
     const newItems = items.slice();
-    newItems[index][name] = name === 'quantity_used' || name === 'unit_price' ? parseFloat(value) : value;
+    
+    if (['item_name', 'quantity_used', 'unit', 'unit_price', 'amount'].includes(name)) {
+      newItems[index] = { ...newItems[index], [name]: name === 'quantity_used' || name === 'unit_price' ? parseFloat(value) : value };
+    }
 
     if (name === 'item_name') {
       const selectedItem = inventoryItems.find(item => item.item_name === value);
       if (selectedItem) {
-        newItems[index].unit = selectedItem.unit;
-        newItems[index].unit_price = selectedItem.price;
+        newItems[index] = {
+          ...newItems[index],
+          unit: selectedItem.unit,
+          unit_price: selectedItem.price,
+        };
       }
     }
 
     if (name === 'quantity_used') {
       const selectedItem = inventoryItems.find(item => item.item_name === newItems[index].item_name);
       if (selectedItem) {
-        newItems[index].amount = (selectedItem.price * parseFloat(value)).toFixed(2);
+        newItems[index] = {
+          ...newItems[index],
+          amount: (selectedItem.price * parseFloat(value)).toFixed(2),
+        };
       }
     }
 
@@ -154,7 +163,7 @@ const AddProductionOrder = () => {
             <input id={`unit_price_${index}`} type="number" name="unit_price" value={item.unit_price} onChange={(e) => handleItemChange(index, e)} required />
 
             <label htmlFor={`amount_${index}`}>Amount</label>
-            <input id={`amount_${index}`} type="number" name="amount" value={item.amount} onChange={(e) => handleItemChange(index, e)} required />
+            <input id={`amount_${index}`} type="number" name="amount" value={item.amount} readOnly />
           </div>
         ))}
         <button type="button" onClick={handleAddItem}>Add Item</button>
