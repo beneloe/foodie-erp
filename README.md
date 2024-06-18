@@ -16,7 +16,7 @@ Foodie ERP is an enterprise resource planning software for small, pre-launch foo
     npm install
     cd ..
     ```
-3. Create an `.env` file in the `/backend` directory and add the following:
+3. Create an `.env` file in the root directory and the `/backend` directory and add the following:
     ```env
     DB_USER=admin
     DB_PASS=admin
@@ -70,7 +70,7 @@ http://localhost:3000
 Run backend test:
 ```sh
 cd backend
-jest
+npm test
 ```
 
 ### Test Frontend
