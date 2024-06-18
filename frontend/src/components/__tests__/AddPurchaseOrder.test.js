@@ -30,6 +30,8 @@ test('shows validation errors if fields are empty', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Date is required')).toBeInTheDocument();
+  });
+  await waitFor(() => {
     expect(screen.getByText('Vendor is required')).toBeInTheDocument();
   });
 });
@@ -45,9 +47,21 @@ test('shows validation errors if item fields are invalid', async () => {
 
   await waitFor(() => {
     expect(screen.getAllByText('Item name is required').length).toBeGreaterThan(0);
+  });
+  
+  await waitFor(() => {
     expect(screen.getAllByText('Quantity must be a positive number').length).toBeGreaterThan(0);
+  });
+  
+  await waitFor(() => {
     expect(screen.getAllByText('Unit is required').length).toBeGreaterThan(0);
+  });
+  
+  await waitFor(() => {
     expect(screen.getAllByText('Unit price must be a positive number').length).toBeGreaterThan(0);
+  });
+  
+  await waitFor(() => {
     expect(screen.getAllByText('Amount must be a positive number').length).toBeGreaterThan(0);
   });
 });
