@@ -15,6 +15,15 @@ afterAll(async () => {
   server.close();
 });
 
+describe('GET /api/service-costs', () => {
+  it('should fetch all service costs', async () => {
+    const response = await request(app).get('/api/service-costs');
+    expect(response.status).toBe(200);
+    expect(response.body.serviceCosts).toBeInstanceOf(Array);
+    expect(response.body.serviceCostItems).toBeInstanceOf(Array);
+  });
+});
+
 describe('POST /api/service-costs/add', () => {
   it('should create a new service cost', async () => {
     const response = await request(app)
@@ -40,13 +49,20 @@ describe('POST /api/service-costs/add', () => {
     expect(new Date(response.body.date).toISOString().split('T')[0]).toBe('2024-01-01');
     expect(response.body.vendor).toBe('Service Vendor 1');
   });
-});
 
-describe('GET /api/service-costs', () => {
-  it('should fetch all service costs', async () => {
-    const response = await request(app).get('/api/service-costs');
-    expect(response.status).toBe(200);
-    expect(response.body.serviceCosts).toBeInstanceOf(Array);
-    expect(response.body.serviceCostItems).toBeInstanceOf(Array);
+  it('should return 400 if input data is invalid', async () => {
+    const response = await request(app)
+      .post('/api/service-costs/add')
+      .send({
+        date: '',
+        vendor: '',
+        amount: -150.0,
+        paid: 'true',
+        status: '',
+        items: [],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Invalid input data');
   });
 });

@@ -3,17 +3,27 @@ import { Link } from 'react-router-dom';
 
 const Inventory = () => {
   const [items, setItems] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch('/api/inventory')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then(data => setItems(data))
-      .catch(error => console.error('There was an error fetching the inventory!', error));
+      .catch(error => {
+        console.error('There was an error fetching the inventory!', error);
+        setError('There was an error fetching the inventory!');
+      });
   }, []);
 
   return (
-    <div style={{ "margin-top": "50px" }}>
+    <div style={{ marginTop: '50px' }}>
       <h2>Inventory</h2>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
       <input type="text" placeholder="Search Inventory..." />
       <table>
         <thead>
@@ -33,7 +43,7 @@ const Inventory = () => {
           ))}
         </tbody>
       </table>
-      <div style={{ "margin-top": "30px" }}>
+      <div style={{ marginTop: '30px' }}>
         <Link to="/inventory/create">Add New</Link>
       </div>
     </div>

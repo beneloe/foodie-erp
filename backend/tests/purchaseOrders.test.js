@@ -49,4 +49,29 @@ describe('POST /api/purchase-orders/add', () => {
     expect(new Date(response.body.date).toISOString().split('T')[0]).toBe('2024-01-01');
     expect(response.body.vendor).toBe('Test Vendor');
   });
+
+  it('should return validation error for invalid inputs', async () => {
+    const response = await request(app)
+      .post('/api/purchase-orders/add')
+      .send({
+        date: 'invalid-date',
+        vendor: 123,
+        amount: -200.0,
+        paid: 'yes',
+        received: 'no',
+        items: [
+          {
+            inventory_item_id: -1,
+            quantity: -20.0,
+            unit: '',
+            unit_price: -10.0,
+            amount: -200.0,
+          },
+        ],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body.errors).toHaveLength(9);
+  });
 });
