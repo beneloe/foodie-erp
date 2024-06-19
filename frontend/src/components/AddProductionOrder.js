@@ -94,8 +94,6 @@ const AddProductionOrder = () => {
       }))
     };
 
-    console.log('Submitting new order:', newOrder);
-
     fetch('/api/production-orders/add', {
       method: 'POST',
       headers: {
@@ -114,7 +112,6 @@ const AddProductionOrder = () => {
           setStatus('done');
           setItems([{ item_name: '', quantity_used: '', unit: '', unit_price: '', amount: '' }]);
           setTotalAmount(0);
-          console.log('Production Order created:', data);
         }
       })
       .catch((error) => {
