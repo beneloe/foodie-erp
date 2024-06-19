@@ -15,8 +15,6 @@ DELETE FROM inventory_item;
 DELETE FROM users;
 
 -- Populate database with sample data
-INSERT INTO users (username, password, email) VALUES ('admin', 'password', 'admin@admin.com');
-
 INSERT INTO inventory_item (item_name, stock, unit, price)
 VALUES 
 ('Bread', 30000, 'grams', 0.01),

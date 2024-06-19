@@ -117,7 +117,6 @@ const AddPurchaseOrder = () => {
         setPaid(true);
         setReceived(true);
         setItems([{ item_name: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
-        console.log('Purchase Order created:', data);
       })
       .catch((error) => {
         console.error('Error creating Purchase Order:', error);

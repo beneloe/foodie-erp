@@ -75,7 +75,6 @@ const AddServiceCost = () => {
         setPaid(true);
         setStatus('done');
         setItems([{ service_description: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
-        console.log('Service Cost created:', data);
       })
       .catch((error) => {
         console.error('Error creating Service Cost:', error);

@@ -102,7 +102,6 @@ const AddStaffingCost = () => {
         setPaid(true);
         setItems([{ line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
         setErrors({});
-        console.log('Staffing Cost created:', data);
       })
       .catch((error) => {
         console.error('Error creating Staffing Cost:', error);

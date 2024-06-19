@@ -15,6 +15,7 @@ const serviceCostsRoutes = require('./routes/serviceCosts');
 const otherCostsRoutes = require('./routes/otherCosts');
 const staffingCostsRoutes = require('./routes/staffingCosts');
 const kpiRoutes = require('./routes/kpis');
+const authenticationRoutes = require('./routes/authentication');
 
 app.use(helmet());
 app.use(
@@ -54,6 +55,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('combined'));
 
+app.use('/api/authentication', authenticationRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/purchase-orders', purchaseOrderRoutes);
 app.use('/api/production-orders', productionOrderRoutes);
