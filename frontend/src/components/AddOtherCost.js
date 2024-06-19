@@ -75,7 +75,6 @@ const AddOtherCost = () => {
         setPaid(true);
         setStatus('done');
         setItems([{ line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
-        console.log('Other Cost created:', data);
       })
       .catch((error) => {
         console.error('Error creating Other Cost:', error);
