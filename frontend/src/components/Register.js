@@ -49,7 +49,6 @@ const Register = () => {
         return;
       }
 
-      const data = await response.json();
       setSuccess('Registration successful!');
       setUsername('');
       setEmail('');

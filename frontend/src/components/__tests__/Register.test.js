@@ -33,7 +33,13 @@ test('shows validation errors if fields are empty', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Username is required')).toBeInTheDocument();
+  });
+  
+  await waitFor(() => {
     expect(screen.getByText('Valid email is required')).toBeInTheDocument();
+  });
+  
+  await waitFor(() => {
     expect(screen.getByText('Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.')).toBeInTheDocument();
   });
 });
