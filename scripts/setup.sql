@@ -4,9 +4,9 @@ DROP TABLE IF EXISTS service_cost_items, service_costs, staffing_costs, staffing
 -- Create users table
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  username VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE
+  username VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Create inventory_item table
