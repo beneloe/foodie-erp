@@ -2,6 +2,14 @@ const pool = require('../config/db');
 
 const setupDatabase = async () => {
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(255) NOT NULL UNIQUE,
+      email VARCHAR(255) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS inventory_item (
       id SERIAL PRIMARY KEY,
       item_name VARCHAR(255) NOT NULL UNIQUE,
@@ -162,6 +170,7 @@ const teardownDatabase = async () => {
   await pool.query('DELETE FROM other_cost_items');
   await pool.query('DELETE FROM other_costs');
   await pool.query('DELETE FROM kpis');
+  await pool.query('DELETE FROM users');
 };
 
 module.exports = { setupDatabase, teardownDatabase };
