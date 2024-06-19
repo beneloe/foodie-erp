@@ -116,7 +116,6 @@ const AddSalesOrder = () => {
         setDelivered(true);
         setItems([{ item_name: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
         setErrors({});
-        console.log('Sales Order created:', data);
       })
       .catch((error) => {
         console.error('Error creating Sales Order:', error);
