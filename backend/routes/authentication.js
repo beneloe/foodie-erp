@@ -10,7 +10,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const validateRegister = [
   body('username').isString().trim().escape().notEmpty().withMessage('Username is required'),
   body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
+    .matches(/[A-Z]/).withMessage('Password must include an uppercase letter')
+    .matches(/[a-z]/).withMessage('Password must include a lowercase letter')
+    .matches(/\d/).withMessage('Password must include a number')
+    .matches(/[@$!%*?&]/).withMessage('Password must include a special character'),
 ];
 
 const validateLogin = [
