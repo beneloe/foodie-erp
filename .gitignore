@@ -3,3 +3,7 @@
 sonar-project.properties
 .scannerwork
 scripts/sonar-scanner.sh
+s3.js
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
