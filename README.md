@@ -3,6 +3,8 @@
 ## About
 Foodie ERP is an enterprise resource planning software for small, pre-launch food producers.
 
+Found on: https://foodie-erp-060665c4e011.herokuapp.com/
+
 ## Installation
 1. Clone the repository:
     ```sh
