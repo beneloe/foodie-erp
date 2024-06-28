@@ -1,5 +1,4 @@
 #!/bin/bash
-cd backend
-node index.js &
 cd frontend
-npm start
+
+concurrently "cd ../backend && node index.js" "npm start"
