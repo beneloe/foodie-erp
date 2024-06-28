@@ -3,3 +3,4 @@
 sonar-project.properties
 .scannerwork
 scripts/sonar-scanner.sh
+.DS_Store
