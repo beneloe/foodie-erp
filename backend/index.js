@@ -22,7 +22,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", 'https:/'],
+      scriptSrc: ["'self'", 'https:'],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'"],
       connectSrc: ["'self'"],
@@ -40,6 +40,7 @@ app.use(
 app.use(helmet.hsts({ maxAge: 63072000 }));
 app.use(helmet.frameguard({ action: 'sameorigin' }));
 app.use(helmet.noSniff());
+app.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
 
 app.set('trust proxy', 'loopback');
 

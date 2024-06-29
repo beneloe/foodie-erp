@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const kpis = require('../models/KPIs');
+const kpis = require('../models/Kpis');
 
 router.get('/revenue', async (req, res) => {
   try {
