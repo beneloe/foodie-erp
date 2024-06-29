@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+
 const AddInventoryItem = () => {
   const [itemName, setItemName] = useState('');
   const [stock, setStock] = useState('');
@@ -49,7 +51,7 @@ const AddInventoryItem = () => {
       price: parseFloat(price)
     };
 
-    fetch('/api/inventory/add', {
+    fetch(`${API_URL}/api/inventory/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
