@@ -49,7 +49,7 @@ const AddInventoryItem = () => {
       price: parseFloat(price)
     };
 
-    fetch('/api/inventory/add', {
+    fetch("/api/inventory/add", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

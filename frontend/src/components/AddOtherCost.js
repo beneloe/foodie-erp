@@ -61,7 +61,7 @@ const AddOtherCost = () => {
       }))
     };
 
-    fetch('/api/other-costs/add', {
+    fetch("/api/other-costs/add", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

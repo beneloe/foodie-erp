@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -22,7 +23,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", 'https:/'],
+      scriptSrc: ["'self'", 'https:'],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'"],
       connectSrc: ["'self'"],
@@ -40,6 +41,7 @@ app.use(
 app.use(helmet.hsts({ maxAge: 63072000 }));
 app.use(helmet.frameguard({ action: 'sameorigin' }));
 app.use(helmet.noSniff());
+app.use(helmet.referrerPolicy({ policy: 'no-referrer' }));
 
 app.set('trust proxy', 'loopback');
 
@@ -65,8 +67,10 @@ app.use('/api/other-costs', otherCostsRoutes);
 app.use('/api/staffing-costs', staffingCostsRoutes);
 app.use('/api/kpis', kpiRoutes);
 
-app.get('/', (req, res) => {
-  res.send('API is working');
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 if (require.main === module) {
