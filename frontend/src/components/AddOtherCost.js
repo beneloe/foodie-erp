@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+
 const AddOtherCost = () => {
   const [date, setDate] = useState('');
   const [vendor, setVendor] = useState('');
@@ -61,7 +63,7 @@ const AddOtherCost = () => {
       }))
     };
 
-    fetch('/api/other-costs/add', {
+    fetch(`${API_URL}/api/other-costs/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
