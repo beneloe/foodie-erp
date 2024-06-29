@@ -4,7 +4,7 @@
   "description": "Foodie ERP is an enterprise resource planning software for small, pre-launch food producers.",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"./scripts/start-backend.sh\" \"./scripts/start-frontend.sh\"",
+    "start": "node backend/server.js",
     "start:backend": "cd backend && node index.js",
     "start:frontend": "cd frontend && npm start",
     "lint": "eslint -f sarif -o eslint-results.sarif .",
