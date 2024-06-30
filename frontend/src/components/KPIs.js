@@ -27,8 +27,13 @@ const Dashboard = () => {
 
     fetch('/api/kpis/profit-margin')
       .then(response => response.json())
-      .then(data => setProfitMargin(data.profit_margin))
-      .catch(error => console.error('Error fetching profit margin:', error));
+      .then(data => {
+        setProfitMargin(data.profit_margin !== null ? parseFloat(data.profit_margin) : null);
+      })
+      .catch(error => {
+        console.error('Error fetching profit margin:', error);
+        setProfitMargin(null);
+      });
 
     fetch('/api/inventory')
       .then(response => response.json())
@@ -98,7 +103,11 @@ const Dashboard = () => {
       </div>
       <div>
         <h3>Profit Margin</h3>
-        <p>{profitMargin !== null ? `${profitMargin.toFixed(2)}%` : 'Not available'}</p>
+        <p>
+          {profitMargin !== null && !isNaN(profitMargin) 
+            ? `${profitMargin.toFixed(2)}%` 
+            : 'Not available'}
+        </p>
       </div>
       <div>
         <h3>Break-Even Point (in units)</h3>
