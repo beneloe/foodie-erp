@@ -4,7 +4,7 @@ const Dashboard = () => {
   const [revenue, setRevenue] = useState(0);
   const [totalCosts, setTotalCosts] = useState({});
   const [grossProfit, setGrossProfit] = useState({});
-  const [profitMargin, setProfitMargin] = useState(0);
+  const [profitMargin, setProfitMargin] = useState(null);
   const [breakEvenPoints, setBreakEvenPoints] = useState({});
   const [inventoryItems, setInventoryItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
@@ -27,7 +27,7 @@ const Dashboard = () => {
 
     fetch('/api/kpis/profit-margin')
       .then(response => response.json())
-      .then(data => setProfitMargin(data.profitMargin))
+      .then(data => setProfitMargin(data.profit_margin))
       .catch(error => console.error('Error fetching profit margin:', error));
 
     fetch('/api/inventory')
@@ -44,12 +44,32 @@ const Dashboard = () => {
   useEffect(() => {
     if (selectedItem) {
       fetch(`/api/kpis/break-even-point/${selectedItem}`)
-        .then(response => response.json())
-        .then(data => setBreakEvenPoints(prevState => ({
-          ...prevState,
-          [selectedItem]: data.breakEvenPoint
-        })))
-        .catch(error => console.error('Error fetching break-even point:', error));
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch break-even point');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.breakEvenPoint === null) {
+            setBreakEvenPoints(prevState => ({
+              ...prevState,
+              [selectedItem]: 'Not applicable'
+            }));
+          } else {
+            setBreakEvenPoints(prevState => ({
+              ...prevState,
+              [selectedItem]: data.breakEvenPoint
+            }));
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching break-even point:', error);
+          setBreakEvenPoints(prevState => ({
+            ...prevState,
+            [selectedItem]: 'Error calculating'
+          }));
+        });
     }
   }, [selectedItem]);
 
@@ -78,7 +98,7 @@ const Dashboard = () => {
       </div>
       <div>
         <h3>Profit Margin</h3>
-        <p>{profitMargin}%</p>
+        <p>{profitMargin !== null ? `${profitMargin.toFixed(2)}%` : 'Not available'}</p>
       </div>
       <div>
         <h3>Break-Even Point (in units)</h3>
@@ -87,7 +107,9 @@ const Dashboard = () => {
             <option key={item.id} value={item.item_name}>{item.item_name}</option>
           ))}
         </select>
-        <p>{breakEvenPoints[selectedItem] !== undefined ? breakEvenPoints[selectedItem] : 'Calculating...'}</p>
+        <p>{breakEvenPoints[selectedItem] !== undefined ? 
+            (breakEvenPoints[selectedItem] === 'Not applicable' ? 'Not applicable (no sales)' : breakEvenPoints[selectedItem]) 
+            : 'Calculating...'}</p>
       </div>
     </div>
   );

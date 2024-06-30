@@ -91,18 +91,24 @@ const getProfitMargin = async () => {
     )
     SELECT 
       CASE 
-        WHEN revenue.total_revenue = 0 THEN 0
+        WHEN revenue.total_revenue = 0 THEN NULL
         ELSE (gross_profit.gross_profit / NULLIF(revenue.total_revenue, 0)) * 100
       END AS profit_margin
     FROM gross_profit, revenue;
   `);
-  return result.rows[0].profit_margin || 0;
+  return result.rows[0].profit_margin;
 };
 
 const getBreakEvenPoint = async (itemName) => {
   try {
     const result = await db.query(`
-      WITH fixed_costs AS (
+      WITH sales_check AS (
+        SELECT COUNT(*) > 0 AS has_sales
+        FROM sales_order_items soi
+        JOIN inventory_item ii ON soi.inventory_item_id = ii.id
+        WHERE ii.item_name = $1
+      ),
+      fixed_costs AS (
         SELECT COALESCE(SUM(amount), 0) AS total_fixed_cost
         FROM (
           SELECT amount FROM other_costs
@@ -126,10 +132,11 @@ const getBreakEvenPoint = async (itemName) => {
       )
       SELECT 
         CASE
+          WHEN NOT sales_check.has_sales THEN NULL
           WHEN (price_per_unit.price - variable_costs_per_unit.variable_cost_per_unit) = 0 THEN NULL
           ELSE (fixed_costs.total_fixed_cost / NULLIF((price_per_unit.price - variable_costs_per_unit.variable_cost_per_unit), 0))
         END AS break_even_point_in_units
-      FROM fixed_costs, variable_costs_per_unit, price_per_unit;
+      FROM fixed_costs, variable_costs_per_unit, price_per_unit, sales_check;
     `, [itemName]);
 
     console.log('Break-even point calculation result:', result.rows[0]);
