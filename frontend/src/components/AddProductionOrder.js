@@ -120,8 +120,8 @@ const AddProductionOrder = () => {
   };
   
   return (
-    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
+    <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '500px', width: '100%' }}>
         <h2>Create Production Order</h2>
         {errors.length > 0 && (
           <div style={{ color: 'red' }}>

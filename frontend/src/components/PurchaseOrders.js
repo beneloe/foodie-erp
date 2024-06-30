@@ -20,29 +20,29 @@ const PurchaseOrders = () => {
   };
 
   return (
-    <div style={{ "margin-top": "50px" }}>
+    <div style={{ marginTop: '30px' }}>
       <h2>Purchase Orders</h2>
-      <table>
+      <table style={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Vendor</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th>Received</th>
-            <th>Items</th>
+            <th style={{ padding: '0 10px' }}>Date</th>
+            <th style={{ padding: '0 10px' }}>Vendor</th>
+            <th style={{ padding: '0 10px' }}>Amount</th>
+            <th style={{ padding: '0 10px' }}>Paid</th>
+            <th style={{ padding: '0 10px' }}>Received</th>
+            <th style={{ padding: '0 10px' }}>Items</th>
           </tr>
         </thead>
         <tbody>
           {purchaseOrders.map(order => (
             <tr key={order.id}>
-              <td>{new Date(order.date).toLocaleDateString()}</td>
-              <td>{order.vendor}</td>
-              <td>{order.amount}</td>
-              <td>{order.paid ? 'Yes' : 'No'}</td>
-              <td>{order.received ? 'Yes' : 'No'}</td>
-              <td>
-                <ul>
+              <td style={{ padding: '0 10px' }}>{new Date(order.date).toLocaleDateString()}</td>
+              <td style={{ padding: '0 10px' }}>{order.vendor}</td>
+              <td style={{ padding: '0 10px' }}>{order.amount}</td>
+              <td style={{ padding: '0 10px' }}>{order.paid ? 'Yes' : 'No'}</td>
+              <td style={{ padding: '0 10px' }}>{order.received ? 'Yes' : 'No'}</td>
+              <td style={{ padding: '0 10px' }}>
+                <ul style={{ padding: 0, listStyleType: 'none' }}>
                   {getItemsForOrder(order.id).map(item => (
                     <li key={item.id}>
                       {item.item_name} - {item.quantity} {item.unit} @ {item.unit_price} each, Amount: {item.amount}
@@ -54,7 +54,7 @@ const PurchaseOrders = () => {
           ))}
         </tbody>
       </table>
-      <div style={{ "margin-top": "30px" }}>
+      <div style={{ marginTop: '30px' }}>
         <Link to="/purchases/create">Add New</Link>
       </div>
     </div>

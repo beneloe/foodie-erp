@@ -20,28 +20,28 @@ const ServiceCosts = () => {
   };
 
   return (
-    <div style={{ marginTop: '50px' }}>
+    <div style={{ marginTop: '30px' }}>
       <h2>Service Orders</h2>
-      <table>
+      <table style={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Vendor</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th>Status</th>
-            <th>Items</th>
+            <th style={{ padding: '0 10px' }}>Date</th>
+            <th style={{ padding: '0 10px' }}>Vendor</th>
+            <th style={{ padding: '0 10px' }}>Amount</th>
+            <th style={{ padding: '0 10px' }}>Paid</th>
+            <th style={{ padding: '0 10px' }}>Status</th>
+            <th style={{ padding: '0 10px' }}>Items</th>
           </tr>
         </thead>
         <tbody>
           {serviceCosts.map((order) => (
             <tr key={order.id}>
-              <td>{order.date}</td>
-              <td>{order.vendor}</td>
-              <td>{order.amount}</td>
-              <td>{order.paid ? 'Yes' : 'No'}</td>
-              <td>{order.status}</td>
-              <td>
+              <td style={{ padding: '0 10px' }}>{order.date}</td>
+              <td style={{ padding: '0 10px' }}>{order.vendor}</td>
+              <td style={{ padding: '0 10px' }}>{order.amount}</td>
+              <td style={{ padding: '0 10px' }}>{order.paid ? 'Yes' : 'No'}</td>
+              <td style={{ padding: '0 10px' }}>{order.status}</td>
+              <td style={{ padding: '0 10px' }}>
                 {getCostItems(order.id).map((item) => (
                   <div key={item.id}>
                     {item.quantity} {item.unit}

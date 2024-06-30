@@ -21,23 +21,23 @@ const Inventory = () => {
   }, []);
 
   return (
-    <div style={{ marginTop: '50px' }}>
+    <div style={{ marginTop: '30px' }}>
       <h2>Inventory</h2>
       {error && <div style={{ color: 'red' }}>{error}</div>}
-      <table>
+      <table style={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Item</th>
-            <th>Stock</th>
+            <th style={{ padding: '0 10px' }}>#</th>
+            <th style={{ padding: '0 10px' }}>Item</th>
+            <th style={{ padding: '0 10px' }}>Stock</th>
           </tr>
         </thead>
         <tbody>
           {items.map((item, index) => (
             <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{item.item_name}</td>
-              <td>{item.stock}</td>
+              <td style={{ padding: '0 10px' }}>{index + 1}</td>
+              <td style={{ padding: '0 10px' }}>{item.item_name}</td>
+              <td style={{ padding: '0 10px' }}>{item.stock}</td>
             </tr>
           ))}
         </tbody>

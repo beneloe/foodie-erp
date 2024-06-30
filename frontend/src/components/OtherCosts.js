@@ -25,28 +25,28 @@ const OtherCosts = () => {
   };
 
   return (
-    <div style={{ marginTop: '50px' }}>
+    <div style={{ marginTop: '30px' }}>
       <h2>Other Costs</h2>
-      <table>
+      <table style={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Vendor</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th>Status</th>
-            <th>Items</th>
+            <th style={{ padding: '0 10px' }}>Date</th>
+            <th style={{ padding: '0 10px' }}>Vendor</th>
+            <th style={{ padding: '0 10px' }}>Amount</th>
+            <th style={{ padding: '0 10px' }}>Paid</th>
+            <th style={{ padding: '0 10px' }}>Status</th>
+            <th style={{ padding: '0 10px' }}>Items</th>
           </tr>
         </thead>
         <tbody>
           {otherCosts.map((cost) => (
             <tr key={cost.id}>
-              <td>{cost.date}</td>
-              <td>{cost.vendor}</td>
-              <td>{cost.amount}</td>
-              <td>{cost.paid ? 'Yes' : 'No'}</td>
-              <td>{cost.status}</td>
-              <td>
+              <td style={{ padding: '0 10px' }}>{cost.date}</td>
+              <td style={{ padding: '0 10px' }}>{cost.vendor}</td>
+              <td style={{ padding: '0 10px' }}>{cost.amount}</td>
+              <td style={{ padding: '0 10px' }}>{cost.paid ? 'Yes' : 'No'}</td>
+              <td style={{ padding: '0 10px' }}>{cost.status}</td>
+              <td style={{ padding: '0 10px' }}>
                 {getCostItems(cost.id).map((item) => (
                   <div key={item.id}>
                     {item.line_item}: {item.quantity} {item.unit} @ {item.unit_price}

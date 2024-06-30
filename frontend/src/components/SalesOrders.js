@@ -20,28 +20,28 @@ const SalesOrders = () => {
   };
 
   return (
-    <div style={{ "margin-top": "50px" }}>
+    <div style={{ marginTop: '30px' }}>
       <h2>Sales Orders</h2>
-      <table>
+      <table style={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Customer</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th>Delivered</th>
-            <th>Items</th>
+            <th style={{ padding: '0 10px' }}>Date</th>
+            <th style={{ padding: '0 10px' }}>Customer</th>
+            <th style={{ padding: '0 10px' }}>Amount</th>
+            <th style={{ padding: '0 10px' }}>Paid</th>
+            <th style={{ padding: '0 10px' }}>Delivered</th>
+            <th style={{ padding: '0 10px' }}>Items</th>
           </tr>
         </thead>
         <tbody>
           {salesOrders.map((order) => (
             <tr key={order.id}>
-              <td>{order.date}</td>
-              <td>{order.customer}</td>
-              <td>{order.amount}</td>
-              <td>{order.paid ? 'Yes' : 'No'}</td>
-              <td>{order.delivered ? 'Yes' : 'No'}</td>
-              <td>
+              <td style={{ padding: '0 10px' }}>{order.date}</td>
+              <td style={{ padding: '0 10px' }}>{order.customer}</td>
+              <td style={{ padding: '0 10px' }}>{order.amount}</td>
+              <td style={{ padding: '0 10px' }}>{order.paid ? 'Yes' : 'No'}</td>
+              <td style={{ padding: '0 10px' }}>{order.delivered ? 'Yes' : 'No'}</td>
+              <td style={{ padding: '0 10px' }}>
                 {getOrderItems(order.id).map((item) => (
                   <div key={item.id}>
                     {item.quantity} {item.unit}
@@ -52,7 +52,7 @@ const SalesOrders = () => {
           ))}
         </tbody>
       </table>
-      <div style={{ "margin-top": "30px" }}>
+      <div style={{ marginTop: '30px' }}>
         <Link to="/sales/create">Add New</Link>
       </div>
     </div>

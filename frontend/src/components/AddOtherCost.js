@@ -93,9 +93,9 @@ const AddOtherCost = () => {
   const totalAmount = items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2);
 
   return (
-    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+<div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <h2>Create Other Cost</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '500px', width: '100%' }}>
         {errors.length > 0 && (
           <div style={{ color: 'red' }}>
             {errors.map((error, index) => (

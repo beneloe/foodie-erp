@@ -76,9 +76,9 @@ const AddInventoryItem = () => {
   };
 
   return (
-    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+    <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <h2>Add New Item</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '500px', width: '100%' }}>
         {error && <div style={{ color: 'red' }}>{error}</div>}
         {success && <div style={{ color: 'green' }}>{success}</div>}
         

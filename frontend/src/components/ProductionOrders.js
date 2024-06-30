@@ -12,29 +12,29 @@ const ProductionOrders = () => {
   }, []);
 
   return (
-    <div style={{ "margin-top": "50px" }}>
+    <div style={{ marginTop: '30px' }}>
       <h2>Production Orders</h2>
-      <table>
+      <table style={{ borderCollapse: 'separate', borderSpacing: '0 10px' }}>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Status</th>
+            <th style={{ padding: '0 10px' }}>Date</th>
+            <th style={{ padding: '0 10px' }}>Product Name</th>
+            <th style={{ padding: '0 10px' }}>Quantity</th>
+            <th style={{ padding: '0 10px' }}>Status</th>
           </tr>
         </thead>
         <tbody>
           {productionOrders.map(order => (
             <tr key={order.id}>
-              <td>{order.date}</td>
-              <td>{order.product_name}</td>
-              <td>{order.quantity}</td>
-              <td>{order.status}</td>
+              <td style={{ padding: '0 10px' }}>{order.date}</td>
+              <td style={{ padding: '0 10px' }}>{order.product_name}</td>
+              <td style={{ padding: '0 10px' }}>{order.quantity}</td>
+              <td style={{ padding: '0 10px' }}>{order.status}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div style={{ "margin-top": "30px" }}>
+      <div style={{ marginTop: '30px' }}>
         <Link to="/production/create">Add New</Link>
       </div>
     </div>

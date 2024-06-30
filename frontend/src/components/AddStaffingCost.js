@@ -91,8 +91,8 @@ const AddStaffingCost = () => {
   };
 
   return (
-    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
+    <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '500px', width: '100%' }}>
         <h2>Create Staffing Cost</h2>
         {errors.date && <p style={{ color: 'red' }}>{errors.date}</p>}
         <label htmlFor="date">Date</label>
