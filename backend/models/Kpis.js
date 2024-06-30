@@ -3,8 +3,7 @@ const db = require('../config/db');
 const getRevenue = async () => {
   const result = await db.query(`
     SELECT SUM(amount) AS revenue
-    FROM sales_order_items
-    WHERE inventory_item_id = (SELECT id FROM inventory_item WHERE item_name = 'Sandwich');
+    FROM sales_order_items;
   `);
   return result.rows[0].revenue;
 };
@@ -14,12 +13,10 @@ const getTotalCosts = async () => {
     WITH purchase_costs AS (
       SELECT SUM(amount) AS total_purchase_cost
       FROM purchase_order_items
-      WHERE inventory_item_id IN (SELECT id FROM inventory_item WHERE item_name IN ('Bread', 'Lettuce', 'Tomato', 'Cheese', 'Ham', 'Mayonnaise'))
     ),
     production_costs AS (
       SELECT SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) AS total_production_cost
       FROM production_order_items
-      WHERE production_order_id = (SELECT id FROM production_orders WHERE product_name = 'Sandwich')
     ),
     other_costs AS (
       SELECT SUM(amount) AS total_other_cost
@@ -45,17 +42,13 @@ const getGrossProfit = async () => {
     WITH revenue AS (
       SELECT SUM(amount) AS total_revenue
       FROM sales_order_items
-      WHERE inventory_item_id = (SELECT id FROM inventory_item WHERE item_name = 'Sandwich')
     ),
     total_costs AS (
       SELECT 
-        (SUM(purchase_order_items.amount) + 
-         (SELECT SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) FROM production_order_items WHERE production_order_id = (SELECT id FROM production_orders WHERE product_name = 'Sandwich')) +
-         (SELECT SUM(amount) FROM other_costs) +
-         (SELECT SUM(amount) FROM staffing_costs)
-        ) AS total_cost
-      FROM purchase_order_items
-      WHERE inventory_item_id IN (SELECT id FROM inventory_item WHERE item_name IN ('Bread', 'Lettuce', 'Tomato', 'Cheese', 'Ham', 'Mayonnaise'))
+        (SELECT SUM(amount) FROM purchase_order_items) +
+        (SELECT SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) FROM production_order_items) +
+        (SELECT SUM(amount) FROM other_costs) +
+        (SELECT SUM(amount) FROM staffing_costs) AS total_cost
     )
     SELECT 
       revenue.total_revenue,
@@ -71,19 +64,13 @@ const getProfitMargin = async () => {
     WITH revenue AS (
       SELECT SUM(amount) AS total_revenue
       FROM sales_order_items
-      WHERE inventory_item_id = (SELECT id FROM inventory_item WHERE item_name = 'Sandwich')
     ),
     total_costs AS (
       SELECT 
-        (SUM(purchase_order_items.amount) + 
-         (SELECT SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) 
-          FROM production_order_items 
-          WHERE production_order_id = (SELECT id FROM production_orders WHERE product_name = 'Sandwich')) +
-         (SELECT SUM(amount) FROM other_costs) +
-         (SELECT SUM(amount) FROM staffing_costs)
-        ) AS total_cost
-      FROM purchase_order_items
-      WHERE inventory_item_id IN (SELECT id FROM inventory_item WHERE item_name IN ('Bread', 'Lettuce', 'Tomato', 'Cheese', 'Ham', 'Mayonnaise'))
+        (SELECT SUM(amount) FROM purchase_order_items) +
+        (SELECT SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) FROM production_order_items) +
+        (SELECT SUM(amount) FROM other_costs) +
+        (SELECT SUM(amount) FROM staffing_costs) AS total_cost
     ),
     gross_profit AS (
       SELECT 
