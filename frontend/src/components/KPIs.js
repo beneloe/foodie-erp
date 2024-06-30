@@ -12,23 +12,31 @@ const Dashboard = () => {
   const fetchData = useCallback(() => {
     fetch('/api/kpis/revenue')
       .then(response => response.json())
-      .then(data => setRevenue(data.revenue))
+      .then(data => setRevenue(parseFloat(data.revenue).toFixed(2)))
       .catch(error => console.error('Error fetching revenue:', error));
 
     fetch('/api/kpis/total-costs')
       .then(response => response.json())
-      .then(data => setTotalCosts(data))
+      .then(data => setTotalCosts({
+        total_purchase_cost: parseFloat(data.total_purchase_cost).toFixed(2),
+        total_production_cost: parseFloat(data.total_production_cost).toFixed(2),
+        total_other_cost: parseFloat(data.total_other_cost).toFixed(2),
+        total_staffing_cost: parseFloat(data.total_staffing_cost).toFixed(2),
+        total_cost: parseFloat(data.total_cost).toFixed(2)
+      }))
       .catch(error => console.error('Error fetching total costs:', error));
 
     fetch('/api/kpis/gross-profit')
       .then(response => response.json())
-      .then(data => setGrossProfit(data))
+      .then(data => setGrossProfit({
+        gross_profit: parseFloat(data.gross_profit).toFixed(2)
+      }))
       .catch(error => console.error('Error fetching gross profit:', error));
 
     fetch('/api/kpis/profit-margin')
       .then(response => response.json())
       .then(data => {
-        setProfitMargin(data.profit_margin !== null ? parseFloat(data.profit_margin) : null);
+        setProfitMargin(data.profit_margin !== null ? parseFloat(data.profit_margin).toFixed(2) : null);
       })
       .catch(error => {
         console.error('Error fetching profit margin:', error);
@@ -68,7 +76,7 @@ const Dashboard = () => {
           } else {
             setBreakEvenPoints(prevState => ({
               ...prevState,
-              [selectedItem]: data.breakEvenPoint
+              [selectedItem]: parseFloat(data.breakEvenPoint).toFixed(2)
             }));
           }
         })
@@ -110,7 +118,7 @@ const Dashboard = () => {
           <h3>Profit Margin</h3>
           <p>
             {profitMargin !== null && !isNaN(profitMargin)
-              ? `${profitMargin.toFixed(2)}%`
+              ? `${profitMargin}%`
               : 'Not available'}
           </p>
         </div>
