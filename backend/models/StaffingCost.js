@@ -1,18 +1,18 @@
 const pool = require('../config/db');
 
-const createStaffingCost = async (date, period, employee, amount, paid) => {
+const createStaffingCost = async (userId, date, period, employee, amount, paid) => {
   const query = `
-    INSERT INTO staffing_costs (date, period, employee, amount, paid)
-    VALUES ($1, $2, $3, $4, $5) RETURNING *;
+    INSERT INTO staffing_costs (user_id, date, period, employee, amount, paid)
+    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
   `;
-  const values = [date, period, employee, amount, paid];
+  const values = [userId, date, period, employee, amount, paid];
   const { rows } = await pool.query(query, values);
   return rows[0];
 };
 
-const getAllStaffingCosts = async () => {
-  const query = 'SELECT * FROM staffing_costs;';
-  const { rows } = await pool.query(query);
+const getAllStaffingCosts = async (userId) => {
+  const query = 'SELECT * FROM staffing_costs WHERE user_id = $1;';
+  const { rows } = await pool.query(query, [userId]);
   return rows;
 };
 

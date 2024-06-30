@@ -10,9 +10,14 @@ const createOtherCostItem = async (otherCostId, lineItem, quantity, unit, unitPr
   return rows[0];
 };
 
-const getAllOtherCostItems = async () => {
-  const query = 'SELECT * FROM other_cost_items;';
-  const { rows } = await pool.query(query);
+const getAllOtherCostItems = async (userId) => {
+  const query = `
+    SELECT oci.*
+    FROM other_cost_items oci
+    JOIN other_costs oc ON oci.other_cost_id = oc.id
+    WHERE oc.user_id = $1;
+  `;
+  const { rows } = await pool.query(query, [userId]);
   return rows;
 };
 
