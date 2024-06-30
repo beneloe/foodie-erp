@@ -87,42 +87,44 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
-      <h2>Dashboard</h2>
-      <div>
-        <h3>Revenue</h3>
-        <p>{revenue}</p>
-      </div>
-      <div>
-        <h3>Total Costs</h3>
-        <p>Purchase Costs: {totalCosts.total_purchase_cost}</p>
-        <p>Production Costs: {totalCosts.total_production_cost}</p>
-        <p>Other Costs: {totalCosts.total_other_cost}</p>
-        <p>Staffing Costs: {totalCosts.total_staffing_cost}</p>
-        <p>Total Costs: {totalCosts.total_cost}</p>
-      </div>
-      <div>
-        <h3>Gross Profit</h3>
-        <p>{grossProfit.gross_profit}</p>
-      </div>
-      <div>
-        <h3>Profit Margin</h3>
-        <p>
-          {profitMargin !== null && !isNaN(profitMargin)
-            ? `${profitMargin.toFixed(2)}%`
-            : 'Not available'}
-        </p>
-      </div>
-      <div>
-        <h3>Break-Even Point (in units)</h3>
-        <select value={selectedItem} onChange={handleItemChange}>
-          {inventoryItems.map(item => (
-            <option key={item.id} value={item.item_name}>{item.item_name}</option>
-          ))}
-        </select>
-        <p>{breakEvenPoints[selectedItem] !== undefined ?
-          (breakEvenPoints[selectedItem] === 'Not applicable' ? 'Not applicable (no sales)' : breakEvenPoints[selectedItem])
-          : 'Calculating...'}</p>
+    <div>
+      <h2 style={{ marginTop: '30px' }}>Dashboard</h2>
+      <div style={{ display: 'flex', minHeight: '100vh' }}>
+        <div>
+          <h3>Revenue</h3>
+          <p>{revenue}</p>
+        </div>
+        <div style={{ marginLeft: '30px' }}>
+          <h3>Total Costs</h3>
+          <p>Purchase Costs: {totalCosts.total_purchase_cost}</p>
+          <p>Production Costs: {totalCosts.total_production_cost}</p>
+          <p>Other Costs: {totalCosts.total_other_cost}</p>
+          <p>Staffing Costs: {totalCosts.total_staffing_cost}</p>
+          <p>Total Costs: {totalCosts.total_cost}</p>
+        </div>
+        <div style={{ marginLeft: '30px' }}>
+          <h3>Gross Profit</h3>
+          <p>{grossProfit.gross_profit}</p>
+        </div>
+        <div style={{ marginLeft: '30px' }}>
+          <h3>Profit Margin</h3>
+          <p>
+            {profitMargin !== null && !isNaN(profitMargin)
+              ? `${profitMargin.toFixed(2)}%`
+              : 'Not available'}
+          </p>
+        </div>
+        <div style={{ marginLeft: '30px' }}>
+          <h3>Break-Even Point (in units)</h3>
+          <select value={selectedItem} onChange={handleItemChange}>
+            {inventoryItems.map(item => (
+              <option key={item.id} value={item.item_name}>{item.item_name}</option>
+            ))}
+          </select>
+          <p>{breakEvenPoints[selectedItem] !== undefined ?
+            (breakEvenPoints[selectedItem] === 'Not applicable' ? 'Not applicable (no sales)' : breakEvenPoints[selectedItem])
+            : 'Calculating...'}</p>
+        </div>
       </div>
     </div>
   );
