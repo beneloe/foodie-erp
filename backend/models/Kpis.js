@@ -102,7 +102,7 @@ const getProfitMargin = async () => {
   return result.rows[0].profit_margin;
 };
 
-const getBreakEvenPoint = async () => {
+const getBreakEvenPoint = async (itemName) => {
   const result = await db.query(`
     WITH fixed_costs AS (
       SELECT SUM(amount) AS total_fixed_cost
@@ -113,20 +113,27 @@ const getBreakEvenPoint = async () => {
     ),
     variable_costs_per_unit AS (
       SELECT 
-        SUM(quantity_used * (SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id)) / (SELECT SUM(quantity) FROM sales_order_items WHERE inventory_item_id = (SELECT id FROM inventory_item WHERE item_name = 'Sandwich')) AS variable_cost_per_unit
-      FROM production_order_items
-      WHERE production_order_id = (SELECT id FROM production_orders WHERE product_name = 'Sandwich')
+        SUM(poi.quantity_used * ii.price) / NULLIF(SUM(soi.quantity), 0) AS variable_cost_per_unit
+      FROM production_order_items poi
+      JOIN production_orders po ON poi.production_order_id = po.id
+      JOIN inventory_item ii ON poi.inventory_item_id = ii.id
+      LEFT JOIN sales_order_items soi ON soi.inventory_item_id = ii.id
+      WHERE po.product_name = $1
     ),
     price_per_unit AS (
       SELECT price
       FROM inventory_item
-      WHERE item_name = 'Sandwich'
+      WHERE item_name = $1
     )
     SELECT 
-      (SUM(fixed_costs.total_fixed_cost) / (price_per_unit.price - variable_costs_per_unit.variable_cost_per_unit)) AS break_even_point_in_units
+      CASE
+        WHEN (price_per_unit.price - variable_costs_per_unit.variable_cost_per_unit) = 0 THEN NULL
+        ELSE (SUM(fixed_costs.total_fixed_cost) / NULLIF((price_per_unit.price - variable_costs_per_unit.variable_cost_per_unit), 0))
+      END AS break_even_point_in_units
     FROM fixed_costs, variable_costs_per_unit, price_per_unit
     GROUP BY price_per_unit.price, variable_costs_per_unit.variable_cost_per_unit;
-  `);
+  `, [itemName]);
+
   return result.rows[0].break_even_point_in_units;
 };
 
