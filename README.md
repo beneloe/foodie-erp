@@ -18,12 +18,12 @@ Foodie ERP is an enterprise resource planning software for small, pre-launch foo
     ```
 3. Create an `.env` file in the root directory and the `/backend` directory and add the following:
     ```env
+    DB_USER=admin
+    DB_PASS=admin
+    DB_NAME=foodie
+    DB_HOST=localhost
+    DB_PORT=5432
     JWT_SECRET=<jwt-secret>
-    DB_HOST=<db-host>
-    DB_PORT=<db-port>
-    DB_USER=<db-username>
-    DB_PASS=<db-password>
-    DB_NAME=<db-name>
     ```
 4. Install PostgreSQL: https://www.postgresql.org/download/
 5. Use the terminal to set up the PostgreSQL database:
@@ -71,7 +71,7 @@ http://localhost:3000
 Run backend test:
 ```sh
 cd backend
-npm test
+npm test tests/*.test.js
 ```
 
 ### Test Frontend
