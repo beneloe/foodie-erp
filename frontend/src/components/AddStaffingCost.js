@@ -15,13 +15,16 @@ const AddStaffingCost = () => {
 
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
-    const newItems = items.slice();
-    newItems[index][name] = value;
-
-    if (name === 'quantity' || name === 'unit_price') {
-      newItems[index].amount = (newItems[index].quantity * newItems[index].unit_price).toFixed(2);
-    }
-
+    const newItems = items.map((item, idx) => {
+      if (idx === index) {
+        const updatedItem = { ...item, [name]: value };
+        if (name === 'quantity' || name === 'unit_price') {
+          updatedItem.amount = (updatedItem.quantity * updatedItem.unit_price).toFixed(2);
+        }
+        return updatedItem;
+      }
+      return item;
+    });
     setItems(newItems);
   };
 
@@ -145,7 +148,7 @@ const AddStaffingCost = () => {
 
             {errors[`items[${index}].amount`] && <p style={{ color: 'red' }}>{errors[`items[${index}].amount`]}</p>}
             <label htmlFor={`amount_${index}`}>Amount</label>
-            <input id={`amount_${index}`} type="number" name="amount" value={item.amount} onChange={(e) => handleItemChange(index, e)} required />
+            <input id={`amount_${index}`} type="number" name="amount" value={item.amount} onChange={(e) => handleItemChange(index, e)} readOnly />
           </div>
         ))}
         <button type="button" onClick={handleAddItem}>Add Item</button>
