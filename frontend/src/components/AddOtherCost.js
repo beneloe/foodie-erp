@@ -7,6 +7,7 @@ const AddOtherCost = () => {
   const [status, setStatus] = useState('done');
   const [items, setItems] = useState([{ line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
   const [errors, setErrors] = useState([]);
+  const [success, setSuccess] = useState('');
 
   const handleAddItem = () => {
     setItems([...items, { line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
@@ -14,7 +15,7 @@ const AddOtherCost = () => {
 
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
-    const newItems = items.slice();
+    const newItems = [...items];
     newItems[index][name] = value;
 
     if (name === 'quantity' || name === 'unit_price') {
@@ -26,7 +27,6 @@ const AddOtherCost = () => {
 
   const validateForm = () => {
     const validationErrors = [];
-
     if (!date) validationErrors.push('Date is required.');
     if (!vendor) validationErrors.push('Vendor is required.');
     items.forEach((item, index) => {
@@ -43,6 +43,8 @@ const AddOtherCost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrors([]);
+    setSuccess('');
 
     if (!validateForm()) return;
 
@@ -68,25 +70,32 @@ const AddOtherCost = () => {
       },
       body: JSON.stringify(newOrder),
     })
-      .then(response => response.json())
-      .then(data => {
-        setDate('');
-        setVendor('');
-        setPaid(true);
-        setStatus('done');
-        setItems([{ line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
-      })
-      .catch((error) => {
-        console.error('Error creating Other Cost:', error);
-      });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      setDate('');
+      setVendor('');
+      setPaid(true);
+      setStatus('done');
+      setItems([{ line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
+      setSuccess('Other Cost added successfully!');
+    })
+    .catch((error) => {
+      console.error('There was an error adding the Other Cost!', error);
+      setErrors(['There was an error adding the Other Cost!']);
+    });
   };
 
   const totalAmount = items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2);
 
   return (
-    <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
-      <form onSubmit={handleSubmit}>
-        <h2>Create Other Cost</h2>
+    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+      <h2>Create Other Cost</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
         {errors.length > 0 && (
           <div style={{ color: 'red' }}>
             {errors.map((error, index) => (
@@ -94,6 +103,8 @@ const AddOtherCost = () => {
             ))}
           </div>
         )}
+        {success && <div style={{ color: 'green' }}>{success}</div>}
+        
         <label htmlFor="date">Date</label>
         <input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
 
@@ -102,7 +113,7 @@ const AddOtherCost = () => {
 
         <h3>Items</h3>
         {items.map((item, index) => (
-          <div key={index}>
+          <div key={index} style={{ marginBottom: '10px' }}>
             <label htmlFor={`line_item_${index}`}>Line Item</label>
             <input id={`line_item_${index}`} type="text" name="line_item" value={item.line_item} onChange={(e) => handleItemChange(index, e)} required />
 
