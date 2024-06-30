@@ -3,8 +3,5 @@
 sonar-project.properties
 .scannerwork
 scripts/sonar-scanner.sh
-<<<<<<< HEAD
-=======
 app.zip
->>>>>>> a5d4d3b (chore: update .gitignore)
 .DS_Store
