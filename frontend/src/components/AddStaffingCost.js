@@ -135,13 +135,6 @@ const AddStaffingCost = () => {
         ))}
         <button type="button" onClick={handleAddItem}>Add Item</button>
         <h3>Total Amount: {totalAmount}</h3>
-        <label htmlFor="paid">Paid</label>
-        <input id="paid" type="checkbox" checked={paid} onChange={(e) => setPaid(e.target.checked)} />
-        <label htmlFor="status">Status</label>
-        <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="done">Done</option>
-          <option value="pending">Pending</option>
-        </select>
         <button type="submit">Submit</button>
       </form>
     </div>
