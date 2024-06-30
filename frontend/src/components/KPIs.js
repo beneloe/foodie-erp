@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 const Dashboard = () => {
   const [revenue, setRevenue] = useState(0);
@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [inventoryItems, setInventoryItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     fetch('/api/kpis/revenue')
       .then(response => response.json())
       .then(data => setRevenue(data.revenue))
@@ -47,6 +47,10 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
     if (selectedItem) {
       fetch(`/api/kpis/break-even-point/${selectedItem}`)
         .then(response => {
@@ -76,7 +80,7 @@ const Dashboard = () => {
           }));
         });
     }
-  }, [selectedItem]);
+  }, [selectedItem, totalCosts, revenue]);  // Add totalCosts and revenue as dependencies
 
   const handleItemChange = (event) => {
     setSelectedItem(event.target.value);
