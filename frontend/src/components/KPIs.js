@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 const Dashboard = () => {
   const [revenue, setRevenue] = useState(0);
   const [totalCosts, setTotalCosts] = useState({});
   const [grossProfit, setGrossProfit] = useState({});
-  const [profitMargin, setProfitMargin] = useState(0);
-  const [breakEvenPoint, setBreakEvenPoint] = useState(0);
+  const [profitMargin, setProfitMargin] = useState(null);
+  const [breakEvenPoints, setBreakEvenPoints] = useState({});
+  const [inventoryItems, setInventoryItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState('');
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     fetch('/api/kpis/revenue')
       .then(response => response.json())
       .then(data => setRevenue(data.revenue))
@@ -25,14 +27,64 @@ const Dashboard = () => {
 
     fetch('/api/kpis/profit-margin')
       .then(response => response.json())
-      .then(data => setProfitMargin(data.profitMargin))
-      .catch(error => console.error('Error fetching profit margin:', error));
+      .then(data => {
+        setProfitMargin(data.profit_margin !== null ? parseFloat(data.profit_margin) : null);
+      })
+      .catch(error => {
+        console.error('Error fetching profit margin:', error);
+        setProfitMargin(null);
+      });
 
-    fetch('/api/kpis/break-even-point')
+    fetch('/api/inventory')
       .then(response => response.json())
-      .then(data => setBreakEvenPoint(data.breakEvenPoint))
-      .catch(error => console.error('Error fetching break-even point:', error));
+      .then(data => {
+        setInventoryItems(data);
+        if (data.length > 0) {
+          setSelectedItem(data[0].item_name);
+        }
+      })
+      .catch(error => console.error('Error fetching inventory items:', error));
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (selectedItem) {
+      fetch(`/api/kpis/break-even-point/${selectedItem}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch break-even point');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.breakEvenPoint === null) {
+            setBreakEvenPoints(prevState => ({
+              ...prevState,
+              [selectedItem]: 'Not applicable'
+            }));
+          } else {
+            setBreakEvenPoints(prevState => ({
+              ...prevState,
+              [selectedItem]: data.breakEvenPoint
+            }));
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching break-even point:', error);
+          setBreakEvenPoints(prevState => ({
+            ...prevState,
+            [selectedItem]: 'Error calculating'
+          }));
+        });
+    }
+  }, [selectedItem, totalCosts, revenue]);  // Add totalCosts and revenue as dependencies
+
+  const handleItemChange = (event) => {
+    setSelectedItem(event.target.value);
+  };
 
   return (
     <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
@@ -55,11 +107,22 @@ const Dashboard = () => {
       </div>
       <div>
         <h3>Profit Margin</h3>
-        <p>{profitMargin}%</p>
+        <p>
+          {profitMargin !== null && !isNaN(profitMargin) 
+            ? `${profitMargin.toFixed(2)}%` 
+            : 'Not available'}
+        </p>
       </div>
       <div>
         <h3>Break-Even Point (in units)</h3>
-        <p>{breakEvenPoint}</p>
+        <select value={selectedItem} onChange={handleItemChange}>
+          {inventoryItems.map(item => (
+            <option key={item.id} value={item.item_name}>{item.item_name}</option>
+          ))}
+        </select>
+        <p>{breakEvenPoints[selectedItem] !== undefined ? 
+            (breakEvenPoints[selectedItem] === 'Not applicable' ? 'Not applicable (no sales)' : breakEvenPoints[selectedItem]) 
+            : 'Calculating...'}</p>
       </div>
     </div>
   );
