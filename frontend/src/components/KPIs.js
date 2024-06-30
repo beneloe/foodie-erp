@@ -30,7 +30,6 @@ const Dashboard = () => {
       .then(data => setProfitMargin(data.profitMargin))
       .catch(error => console.error('Error fetching profit margin:', error));
 
-    // Fetch inventory items
     fetch('/api/inventory')
       .then(response => response.json())
       .then(data => {
