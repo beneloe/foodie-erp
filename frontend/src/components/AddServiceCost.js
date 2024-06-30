@@ -84,8 +84,8 @@ const AddServiceCost = () => {
   const totalAmount = items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2);
 
   return (
-    <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
-      <form onSubmit={handleSubmit}>
+    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
         <h2>Create Service Cost</h2>
         {errors.length > 0 && (
           <div style={{ color: 'red' }}>

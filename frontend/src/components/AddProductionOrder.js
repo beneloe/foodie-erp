@@ -23,12 +23,12 @@ const AddProductionOrder = () => {
 
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
-    const newItems = items.slice();
-    
+    const newItems = [...items];
+  
     if (['item_name', 'quantity_used', 'unit', 'unit_price', 'amount'].includes(name)) {
       newItems[index] = { ...newItems[index], [name]: name === 'quantity_used' || name === 'unit_price' ? parseFloat(value) : value };
     }
-
+  
     if (name === 'item_name') {
       const selectedItem = inventoryItems.find(item => item.item_name === value);
       if (selectedItem) {
@@ -39,7 +39,7 @@ const AddProductionOrder = () => {
         };
       }
     }
-
+  
     if (name === 'quantity_used') {
       const selectedItem = inventoryItems.find(item => item.item_name === newItems[index].item_name);
       if (selectedItem) {
@@ -49,16 +49,16 @@ const AddProductionOrder = () => {
         };
       }
     }
-
+  
     setItems(newItems);
     updateTotalAmount(newItems);
   };
-
+  
   const updateTotalAmount = (items) => {
     const total = items.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
     setTotalAmount(total.toFixed(2));
   };
-
+  
   const validateForm = () => {
     const validationErrors = [];
     if (!date) validationErrors.push('Date is required.');
@@ -74,12 +74,12 @@ const AddProductionOrder = () => {
     setErrors(validationErrors);
     return validationErrors.length === 0;
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (!validateForm()) return;
-
+  
     const newOrder = {
       date,
       product_name: productName,
@@ -93,7 +93,7 @@ const AddProductionOrder = () => {
         amount: parseFloat(item.amount)
       }))
     };
-
+  
     fetch('/api/production-orders/add', {
       method: 'POST',
       headers: {
@@ -118,10 +118,10 @@ const AddProductionOrder = () => {
         console.error('Error creating Production Order:', error);
       });
   };
-
+  
   return (
-    <div style={{ marginTop: "30px", display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
-      <form onSubmit={handleSubmit}>
+    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
         <h2>Create Production Order</h2>
         {errors.length > 0 && (
           <div style={{ color: 'red' }}>
@@ -132,13 +132,13 @@ const AddProductionOrder = () => {
         )}
         <label htmlFor="date">Date</label>
         <input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-
+  
         <label htmlFor='productName'>Product Name</label>
         <input id="productName" type="text" value={productName} onChange={(e) => setProductName(e.target.value)} required />
-
+  
         <label htmlFor='quantity'>Quantity</label>
         <input id="quantity" type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
-
+  
         <h3>Items</h3>
         {items.map((item, index) => (
           <div key={index}>
@@ -149,16 +149,16 @@ const AddProductionOrder = () => {
                 <option key={inventoryItem.id} value={inventoryItem.item_name}>{inventoryItem.item_name}</option>
               ))}
             </select>
-
+  
             <label htmlFor={`quantity_used_${index}`}>Quantity Used</label>
             <input id={`quantity_used_${index}`} type="number" name="quantity_used" value={item.quantity_used} onChange={(e) => handleItemChange(index, e)} required />
-
+  
             <label htmlFor={`unit_${index}`}>Unit</label>
             <input id={`unit_${index}`} type="text" name="unit" value={item.unit} onChange={(e) => handleItemChange(index, e)} required />
-
+  
             <label htmlFor={`unit_price_${index}`}>Unit Price</label>
             <input id={`unit_price_${index}`} type="number" name="unit_price" value={item.unit_price} onChange={(e) => handleItemChange(index, e)} required />
-
+  
             <label htmlFor={`amount_${index}`}>Amount</label>
             <input id={`amount_${index}`} type="number" name="amount" value={item.amount} readOnly />
           </div>
@@ -169,6 +169,6 @@ const AddProductionOrder = () => {
       </form>
     </div>
   );
-};
-
-export default AddProductionOrder;
+  };
+  
+  export default AddProductionOrder;  

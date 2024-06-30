@@ -22,7 +22,7 @@ const AddSalesOrder = () => {
 
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
-    const newItems = items.slice();
+    const newItems = [...items];
     newItems[index][name] = value;
 
     if (name === 'item_name') {
@@ -46,32 +46,16 @@ const AddSalesOrder = () => {
   const validateInput = () => {
     const errors = {};
 
-    if (!date) {
-      errors.date = 'Date is required';
-    }
-    if (!customer) {
-      errors.customer = 'Customer is required';
-    }
-    if (items.length === 0) {
-      errors.items = 'At least one item is required';
-    }
+    if (!date) errors.date = 'Date is required';
+    if (!customer) errors.customer = 'Customer is required';
+    if (items.length === 0) errors.items = 'At least one item is required';
 
     items.forEach((item, index) => {
-      if (!item.item_name) {
-        errors[`items[${index}].item_name`] = 'Item name is required';
-      }
-      if (!item.quantity || item.quantity <= 0) {
-        errors[`items[${index}].quantity`] = 'Quantity must be a positive number';
-      }
-      if (!item.unit) {
-        errors[`items[${index}].unit`] = 'Unit is required';
-      }
-      if (!item.unit_price || item.unit_price <= 0) {
-        errors[`items[${index}].unit_price`] = 'Unit price must be a positive number';
-      }
-      if (!item.amount || item.amount <= 0) {
-        errors[`items[${index}].amount`] = 'Amount must be a positive number';
-      }
+      if (!item.item_name) errors[`items[${index}].item_name`] = 'Item name is required';
+      if (!item.quantity || item.quantity <= 0) errors[`items[${index}].quantity`] = 'Quantity must be a positive number';
+      if (!item.unit) errors[`items[${index}].unit`] = 'Unit is required';
+      if (!item.unit_price || item.unit_price <= 0) errors[`items[${index}].unit_price`] = 'Unit price must be a positive number';
+      if (!item.amount || item.amount <= 0) errors[`items[${index}].amount`] = 'Amount must be a positive number';
     });
 
     return errors;
@@ -125,8 +109,8 @@ const AddSalesOrder = () => {
   const totalAmount = items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2);
 
   return (
-    <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
-      <form onSubmit={handleSubmit}>
+    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
         <h2>Create Sales Order</h2>
         {errors.date && <p style={{ color: 'red' }}>{errors.date}</p>}
         <label htmlFor="date">Date</label>

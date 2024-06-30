@@ -15,7 +15,7 @@ const AddStaffingCost = () => {
 
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
-    const newItems = items.slice();
+    const newItems = [...items];
     newItems[index][name] = value;
 
     if (name === 'quantity' || name === 'unit_price') {
@@ -28,35 +28,17 @@ const AddStaffingCost = () => {
   const validateInput = () => {
     const errors = {};
 
-    if (!date) {
-      errors.date = 'Date is required.';
-    }
-    if (!period) {
-      errors.period = 'Period is required.';
-    }
-    if (!employee) {
-      errors.employee = 'Employee is required.';
-    }
-    if (!amount || amount <= 0) {
-      errors.amount = 'Amount must be a positive number.';
-    }
+    if (!date) errors.date = 'Date is required.';
+    if (!period) errors.period = 'Period is required.';
+    if (!employee) errors.employee = 'Employee is required.';
+    if (!amount || amount <= 0) errors.amount = 'Amount must be a positive number.';
 
     items.forEach((item, index) => {
-      if (!item.line_item) {
-        errors[`items[${index}].line_item`] = 'Line item is required.';
-      }
-      if (!item.quantity || item.quantity <= 0) {
-        errors[`items[${index}].quantity`] = 'Quantity must be a positive number.';
-      }
-      if (!item.unit) {
-        errors[`items[${index}].unit`] = 'Unit is required.';
-      }
-      if (!item.unit_price || item.unit_price <= 0) {
-        errors[`items[${index}].unit_price`] = 'Unit price must be a positive number.';
-      }
-      if (!item.amount || item.amount <= 0) {
-        errors[`items[${index}].amount`] = 'Amount must be a positive number.';
-      }
+      if (!item.line_item) errors[`items[${index}].line_item`] = 'Line item is required.';
+      if (!item.quantity || item.quantity <= 0) errors[`items[${index}].quantity`] = 'Quantity must be a positive number.';
+      if (!item.unit) errors[`items[${index}].unit`] = 'Unit is required.';
+      if (!item.unit_price || item.unit_price <= 0) errors[`items[${index}].unit_price`] = 'Unit price must be a positive number.';
+      if (!item.amount || item.amount <= 0) errors[`items[${index}].amount`] = 'Amount must be a positive number.';
     });
 
     return errors;
@@ -109,8 +91,8 @@ const AddStaffingCost = () => {
   };
 
   return (
-    <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'start', minHeight: '100vh' }}>
-      <form onSubmit={handleSubmit}>
+    <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '400px', width: '100%' }}>
         <h2>Create Staffing Cost</h2>
         {errors.date && <p style={{ color: 'red' }}>{errors.date}</p>}
         <label htmlFor="date">Date</label>
@@ -149,6 +131,7 @@ const AddStaffingCost = () => {
           </div>
         ))}
         <button type="button" onClick={handleAddItem}>Add Item</button>
+        <h3>Total Amount: {items.reduce((acc, item) => acc + parseFloat(item.amount || 0), 0).toFixed(2)}</h3>
         <button type="submit">Submit</button>
       </form>
     </div>
