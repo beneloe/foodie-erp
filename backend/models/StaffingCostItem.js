@@ -10,14 +10,9 @@ const createStaffingCostItem = async (staffingCostId, line_item, quantity, unit,
   return rows[0];
 };
 
-const getAllStaffingCostItems = async (userId) => {
-  const query = `
-    SELECT sci.*
-    FROM staffing_cost_items sci
-    JOIN staffing_costs sc ON sci.staffing_cost_id = sc.id
-    WHERE sc.user_id = $1;
-  `;
-  const { rows } = await pool.query(query, [userId]);
+const getAllStaffingCostItems = async () => {
+  const query = 'SELECT * FROM staffing_cost_items;';
+  const { rows } = await pool.query(query);
   return rows;
 };
 

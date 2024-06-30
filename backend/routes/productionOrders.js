@@ -1,7 +1,6 @@
 const express = require('express');
 const { createProductionOrder, getAllProductionOrders } = require('../models/ProductionOrder');
 const { createProductionOrderItem, getAllProductionOrderItems } = require('../models/ProductionOrderItem');
-const auth = require('../middleware/auth');
 const router = express.Router();
 
 const isValidProductionOrder = (date, productName, quantity, status, items) => {
@@ -42,7 +41,7 @@ const isValidProductionOrder = (date, productName, quantity, status, items) => {
   return errors;
 };
 
-router.post('/add', auth, async (req, res) => {
+router.post('/add', async (req, res) => {
   const { date, product_name, quantity, status, items } = req.body;
   const validationErrors = isValidProductionOrder(date, product_name, quantity, status, items);
 
@@ -51,7 +50,7 @@ router.post('/add', auth, async (req, res) => {
   }
 
   try {
-    const productionOrder = await createProductionOrder(req.user.id, date, product_name, quantity, status);
+    const productionOrder = await createProductionOrder(date, product_name, quantity, status);
     for (const item of items) {
       await createProductionOrderItem(productionOrder.id, item.inventory_item_id, item.quantity_used, item.unit);
     }
@@ -62,10 +61,10 @@ router.post('/add', auth, async (req, res) => {
   }
 });
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const productionOrders = await getAllProductionOrders(req.user.id);
-    const productionOrderItems = await getAllProductionOrderItems(req.user.id);
+    const productionOrders = await getAllProductionOrders();
+    const productionOrderItems = await getAllProductionOrderItems();
     res.status(200).json({ productionOrders, productionOrderItems });
   } catch (error) {
     console.error('Error fetching production orders:', error);

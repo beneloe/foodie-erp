@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import React, { useEffect, useState, useCallback } from 'react';
 
 const Dashboard = () => {
   const [revenue, setRevenue] = useState(0);
@@ -9,8 +8,6 @@ const Dashboard = () => {
   const [breakEvenPoints, setBreakEvenPoints] = useState({});
   const [inventoryItems, setInventoryItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState('');
-
-  const { token } = useContext(AuthContext);
 
   const fetchData = useCallback(() => {
     fetch('/api/kpis/revenue')

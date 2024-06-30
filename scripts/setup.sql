@@ -13,24 +13,38 @@ CREATE TABLE users (
 -- Create inventory_item table
 CREATE TABLE inventory_item (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
   item_name VARCHAR(255) NOT NULL,
   stock NUMERIC(10, 2) NOT NULL CHECK (stock >= 0),
   unit VARCHAR(50) NOT NULL,
   price NUMERIC(10, 2) CHECK (price >= 0),
   UNIQUE(user_id, item_name)
+=======
+  item_name VARCHAR(255) NOT NULL UNIQUE,
+  stock NUMERIC(10, 2) NOT NULL CHECK (stock >= 0),
+  unit VARCHAR(50) NOT NULL,
+  price NUMERIC(10, 2) CHECK (price >= 0)
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 );
 
 -- Create purchase_orders table
 CREATE TABLE purchase_orders (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   date DATE NOT NULL,
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
   paid BOOLEAN NOT NULL,
   received BOOLEAN NOT NULL,
+<<<<<<< HEAD
   UNIQUE(user_id, date, vendor)
+=======
+  UNIQUE(date, vendor)
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 );
 
 -- Create purchase_order_items table
@@ -48,7 +62,10 @@ CREATE TABLE purchase_order_items (
 -- Create production_orders table
 CREATE TABLE production_orders (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   date DATE NOT NULL,
   product_name VARCHAR(255) NOT NULL,
   quantity NUMERIC(10, 2) NOT NULL CHECK (quantity > 0),
@@ -68,13 +85,20 @@ CREATE TABLE production_order_items (
 -- Create sales_orders table
 CREATE TABLE sales_orders (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   date DATE NOT NULL,
   customer VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
   paid BOOLEAN NOT NULL,
   delivered BOOLEAN NOT NULL,
+<<<<<<< HEAD
   UNIQUE(user_id, date, customer)
+=======
+  UNIQUE(date, customer)
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 );
 
 -- Create sales_order_items table
@@ -92,13 +116,20 @@ CREATE TABLE sales_order_items (
 -- Create other_costs table
 CREATE TABLE other_costs (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   date DATE NOT NULL,
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
   paid BOOLEAN NOT NULL,
   status VARCHAR(50) NOT NULL,
+<<<<<<< HEAD
   UNIQUE(user_id, date, vendor)
+=======
+  UNIQUE(date, vendor)
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 );
 
 -- Create other_cost_items table
@@ -116,13 +147,20 @@ CREATE TABLE other_cost_items (
 -- Create staffing costs table
 CREATE TABLE staffing_costs (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   date DATE NOT NULL,
   period VARCHAR(50) NOT NULL,
   employee VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
   paid BOOLEAN NOT NULL,
+<<<<<<< HEAD
   UNIQUE(user_id, date, period, employee)
+=======
+  UNIQUE(date, period, employee)
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 );
 
 -- Create staffing cost items table
@@ -140,13 +178,20 @@ CREATE TABLE staffing_cost_items (
 -- Create service_costs table
 CREATE TABLE service_costs (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   date DATE NOT NULL,
   vendor VARCHAR(255) NOT NULL,
   amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
   paid BOOLEAN NOT NULL,
   status VARCHAR(50) NOT NULL,
+<<<<<<< HEAD
   UNIQUE(user_id, date, vendor)
+=======
+  UNIQUE(date, vendor)
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 );
 
 -- Create service_cost_items table
@@ -164,7 +209,10 @@ CREATE TABLE service_cost_items (
 -- Create KPIs table
 CREATE TABLE kpis (
   id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
   user_id INTEGER REFERENCES users(id),
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   revenue NUMERIC(10, 2) NOT NULL CHECK (revenue >= 0),
   total_purchase_cost NUMERIC(10, 2) NOT NULL CHECK (total_purchase_cost >= 0),
   total_production_cost NUMERIC(10, 2) NOT NULL CHECK (total_production_cost >= 0),
@@ -184,6 +232,7 @@ BEGIN
     IF TG_TABLE_NAME = 'purchase_order_items' THEN
       UPDATE inventory_item
       SET stock = stock + NEW.quantity
+<<<<<<< HEAD
       WHERE id = NEW.inventory_item_id AND user_id = (SELECT user_id FROM purchase_orders WHERE id = NEW.purchase_order_id);
     ELSIF TG_TABLE_NAME = 'production_order_items' THEN
       UPDATE inventory_item
@@ -195,17 +244,35 @@ BEGIN
       WHERE item_name = NEW.product_name AND user_id = NEW.user_id;
     ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
       IF (SELECT stock FROM inventory_item WHERE id = NEW.inventory_item_id AND user_id = (SELECT user_id FROM sales_orders WHERE id = NEW.sales_order_id)) < NEW.quantity THEN
+=======
+      WHERE id = NEW.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'production_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock - NEW.quantity_used
+      WHERE id = NEW.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'production_orders' THEN
+      UPDATE inventory_item
+      SET stock = stock + NEW.quantity
+      WHERE item_name = NEW.product_name;
+    ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
+      IF (SELECT stock FROM inventory_item WHERE id = NEW.inventory_item_id) < NEW.quantity THEN
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
         RAISE EXCEPTION 'Not enough stock for item %', NEW.inventory_item_id;
       ELSE
         UPDATE inventory_item
         SET stock = stock - NEW.quantity
+<<<<<<< HEAD
         WHERE id = NEW.inventory_item_id AND user_id = (SELECT user_id FROM sales_orders WHERE id = NEW.sales_order_id);
+=======
+        WHERE id = NEW.inventory_item_id;
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
       END IF;
     END IF;
   ELSIF TG_OP = 'DELETE' THEN
     IF TG_TABLE_NAME = 'purchase_order_items' THEN
       UPDATE inventory_item
       SET stock = stock - OLD.quantity
+<<<<<<< HEAD
       WHERE id = OLD.inventory_item_id AND user_id = (SELECT user_id FROM purchase_orders WHERE id = OLD.purchase_order_id);
     ELSIF TG_TABLE_NAME = 'production_order_items' THEN
       UPDATE inventory_item
@@ -219,6 +286,21 @@ BEGIN
       UPDATE inventory_item
       SET stock = stock + OLD.quantity
       WHERE id = OLD.inventory_item_id AND user_id = (SELECT user_id FROM sales_orders WHERE id = OLD.sales_order_id);
+=======
+      WHERE id = OLD.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'production_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock + OLD.quantity_used
+      WHERE id = OLD.inventory_item_id;
+    ELSIF TG_TABLE_NAME = 'production_orders' THEN
+      UPDATE inventory_item
+      SET stock = stock - OLD.quantity
+      WHERE item_name = OLD.product_name;
+    ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
+      UPDATE inventory_item
+      SET stock = stock + OLD.quantity
+      WHERE id = OLD.inventory_item_id;
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
     END IF;
   END IF;
   RETURN NULL;

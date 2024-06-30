@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 
 const AddProductionOrder = () => {
   const [date, setDate] = useState('');
@@ -11,8 +15,11 @@ const AddProductionOrder = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [errors, setErrors] = useState([]);
 
+<<<<<<< HEAD
   const { token } = useContext(AuthContext);
 
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   useEffect(() => {
     fetch('/api/inventory')
       .then(response => response.json())
@@ -101,7 +108,10 @@ const AddProductionOrder = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+<<<<<<< HEAD
         'Authorization': `Bearer ${token}`,
+=======
+>>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
       },
       body: JSON.stringify(newOrder),
     })

@@ -10,15 +10,13 @@ const createSalesOrderItem = async (salesOrderId, inventoryItemId, quantity, uni
   return rows[0];
 };
 
-const getAllSalesOrderItems = async (userId) => {
+const getAllSalesOrderItems = async () => {
   const query = `
     SELECT soi.*, ii.item_name 
     FROM sales_order_items soi
-    JOIN inventory_item ii ON soi.inventory_item_id = ii.id
-    JOIN sales_orders so ON soi.sales_order_id = so.id
-    WHERE so.user_id = $1;
+    JOIN inventory_item ii ON soi.inventory_item_id = ii.id;
   `;
-  const { rows } = await pool.query(query, [userId]);
+  const { rows } = await pool.query(query);
   return rows;
 };
 

@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import React, { useState } from 'react';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -8,8 +7,6 @@ const Register = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [formErrors, setFormErrors] = useState({});
-
-  const { token } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +36,6 @@ const Register = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ username, email, password }),
       });

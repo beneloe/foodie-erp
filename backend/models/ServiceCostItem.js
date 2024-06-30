@@ -10,14 +10,9 @@ const createServiceCostItem = async (serviceCostId, serviceDescription, quantity
   return rows[0];
 };
 
-const getAllServiceCostItems = async (userId) => {
-  const query = `
-    SELECT sci.*
-    FROM service_cost_items sci
-    JOIN service_costs sc ON sci.service_cost_id = sc.id
-    WHERE sc.user_id = $1;
-  `;
-  const { rows } = await pool.query(query, [userId]);
+const getAllServiceCostItems = async () => {
+  const query = 'SELECT * FROM service_cost_items;';
+  const { rows } = await pool.query(query);
   return rows;
 };
 

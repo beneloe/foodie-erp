@@ -10,14 +10,9 @@ const createProductionOrderItem = async (productionOrderId, inventoryItemId, qua
   return rows[0];
 };
 
-const getAllProductionOrderItems = async (userId) => {
-  const query = `
-    SELECT poi.*
-    FROM production_order_items poi
-    JOIN production_orders po ON poi.production_order_id = po.id
-    WHERE po.user_id = $1;
-  `;
-  const { rows } = await pool.query(query, [userId]);
+const getAllProductionOrderItems = async () => {
+  const query = 'SELECT * FROM production_order_items;';
+  const { rows } = await pool.query(query);
   return rows;
 };
 

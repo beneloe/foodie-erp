@@ -2,10 +2,9 @@ const express = require('express');
 const { createOtherCost, getAllOtherCosts } = require('../models/OtherCost');
 const { createOtherCostItem, getAllOtherCostItems } = require('../models/OtherCostItem');
 const { body, validationResult } = require('express-validator');
-const auth = require('../middleware/auth');
 const router = express.Router();
 
-router.post('/add', auth, [
+router.post('/add', [
   body('date').isISO8601().withMessage('Date is required and must be a valid date.'),
   body('vendor').notEmpty().withMessage('Vendor is required.'),
   body('amount').isFloat({ gt: 0 }).withMessage('Amount must be a positive number.'),
@@ -25,7 +24,7 @@ router.post('/add', auth, [
 
   const { date, vendor, amount, paid, status, items } = req.body;
   try {
-    const otherCost = await createOtherCost(req.user.id, date, vendor, amount, paid, status);
+    const otherCost = await createOtherCost(date, vendor, amount, paid, status);
     for (const item of items) {
       await createOtherCostItem(otherCost.id, item.line_item, item.quantity, item.unit, item.unit_price, item.amount);
     }
@@ -36,10 +35,10 @@ router.post('/add', auth, [
   }
 });
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const otherCosts = await getAllOtherCosts(req.user.id);
-    const otherCostItems = await getAllOtherCostItems(req.user.id);
+    const otherCosts = await getAllOtherCosts();
+    const otherCostItems = await getAllOtherCostItems();
     res.status(200).json({ otherCosts, otherCostItems });
   } catch (error) {
     console.error('Error fetching other costs:', error);

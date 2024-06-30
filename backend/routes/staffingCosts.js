@@ -2,12 +2,10 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const { createStaffingCost, getAllStaffingCosts } = require('../models/StaffingCost');
 const { createStaffingCostItem, getAllStaffingCostItems } = require('../models/StaffingCostItem');
-const auth = require('../middleware/auth');
 const router = express.Router();
 
 router.post(
   '/add',
-  auth,
   [
     check('date').isISO8601().withMessage('Date must be a valid date'),
     check('period').not().isEmpty().withMessage('Period is required'),
@@ -29,7 +27,7 @@ router.post(
 
     const { date, period, employee, amount, paid, items } = req.body;
     try {
-      const staffingCost = await createStaffingCost(req.user.id, date, period, employee, amount, paid);
+      const staffingCost = await createStaffingCost(date, period, employee, amount, paid);
       for (const item of items) {
         await createStaffingCostItem(staffingCost.id, item.line_item, item.quantity, item.unit, item.unit_price, item.amount);
       }
@@ -41,10 +39,10 @@ router.post(
   }
 );
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const staffingCosts = await getAllStaffingCosts(req.user.id);
-    const staffingCostItems = await getAllStaffingCostItems(req.user.id);
+    const staffingCosts = await getAllStaffingCosts();
+    const staffingCostItems = await getAllStaffingCostItems();
     res.status(200).json({ staffingCosts, staffingCostItems });
   } catch (error) {
     console.error('Error fetching staffing costs:', error);

@@ -10,15 +10,13 @@ const createPurchaseOrderItem = async (purchaseOrderId, inventoryItemId, quantit
   return rows[0];
 };
 
-const getAllPurchaseOrderItems = async (userId) => {
+const getAllPurchaseOrderItems = async () => {
   const query = `
     SELECT poi.*, ii.item_name
     FROM purchase_order_items poi
-    JOIN inventory_item ii ON poi.inventory_item_id = ii.id
-    JOIN purchase_orders po ON poi.purchase_order_id = po.id
-    WHERE po.user_id = $1;
+    JOIN inventory_item ii ON poi.inventory_item_id = ii.id;
   `;
-  const { rows } = await pool.query(query, [userId]);
+  const { rows } = await pool.query(query);
   return rows;
 };
 

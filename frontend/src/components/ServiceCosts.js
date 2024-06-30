@@ -1,12 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 
 const ServiceCosts = () => {
   const [serviceCosts, setServiceCosts] = useState([]);
   const [serviceCostItems, setServiceCostItems] = useState([]);
-
-  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     fetch('/api/service-costs')

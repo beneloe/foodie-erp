@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 
 const PurchaseOrders = () => {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [purchaseOrderItems, setPurchaseOrderItems] = useState([]);
-
-  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     fetch('/api/purchase-orders')

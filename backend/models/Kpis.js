@@ -1,39 +1,30 @@
 const db = require('../config/db');
 
-const getRevenue = async (userId) => {
+const getRevenue = async () => {
   const result = await db.query(`
-    SELECT COALESCE(SUM(soi.amount), 0) AS revenue
-    FROM sales_order_items soi
-    JOIN sales_orders so ON soi.sales_order_id = so.id
-    WHERE so.user_id = $1;
-  `, [userId]);
+    SELECT COALESCE(SUM(amount), 0) AS revenue
+    FROM sales_order_items;
+  `);
   return result.rows[0].revenue || 0;
 };
 
-const getTotalCosts = async (userId) => {
+const getTotalCosts = async () => {
   const result = await db.query(`
     WITH purchase_costs AS (
-      SELECT COALESCE(SUM(poi.amount), 0) AS total_purchase_cost
-      FROM purchase_order_items poi
-      JOIN purchase_orders po ON poi.purchase_order_id = po.id
-      WHERE po.user_id = $1
+      SELECT COALESCE(SUM(amount), 0) AS total_purchase_cost
+      FROM purchase_order_items
     ),
     production_costs AS (
-      SELECT COALESCE(SUM(poi.quantity_used * COALESCE(ii.price, 0)), 0) AS total_production_cost
-      FROM production_order_items poi
-      JOIN production_orders po ON poi.production_order_id = po.id
-      JOIN inventory_item ii ON poi.inventory_item_id = ii.id
-      WHERE po.user_id = $1
+      SELECT COALESCE(SUM(quantity_used * COALESCE((SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id), 0)), 0) AS total_production_cost
+      FROM production_order_items
     ),
     other_costs AS (
       SELECT COALESCE(SUM(amount), 0) AS total_other_cost
       FROM other_costs
-      WHERE user_id = $1
     ),
     staffing_costs AS (
       SELECT COALESCE(SUM(amount), 0) AS total_staffing_cost
       FROM staffing_costs
-      WHERE user_id = $1
     )
     SELECT 
       purchase_costs.total_purchase_cost,
@@ -42,7 +33,7 @@ const getTotalCosts = async (userId) => {
       staffing_costs.total_staffing_cost,
       (purchase_costs.total_purchase_cost + production_costs.total_production_cost + other_costs.total_other_cost + staffing_costs.total_staffing_cost) AS total_cost
     FROM purchase_costs, production_costs, other_costs, staffing_costs;
-  `, [userId]);
+  `);
   return {
     total_purchase_cost: result.rows[0].total_purchase_cost || 0,
     total_production_cost: result.rows[0].total_production_cost || 0,
@@ -52,26 +43,25 @@ const getTotalCosts = async (userId) => {
   };
 };
 
-const getGrossProfit = async (userId) => {
+const getGrossProfit = async () => {
   const result = await db.query(`
     WITH revenue AS (
-      SELECT COALESCE(SUM(soi.amount), 0) AS total_revenue
-      FROM sales_order_items soi
-      JOIN sales_orders so ON soi.sales_order_id = so.id
-      WHERE so.user_id = $1
+      SELECT COALESCE(SUM(amount), 0) AS total_revenue
+      FROM sales_order_items
     ),
     total_costs AS (
       SELECT 
-        COALESCE((SELECT SUM(poi.amount) FROM purchase_order_items poi JOIN purchase_orders po ON poi.purchase_order_id = po.id WHERE po.user_id = $1), 0) + COALESCE((SELECT SUM(poi.quantity_used * COALESCE(ii.price, 0)) FROM production_order_items poi JOIN production_orders po ON poi.production_order_id = po.id JOIN inventory_item ii ON poi.inventory_item_id = ii.id WHERE po.user_id = $1), 0) +
-        COALESCE((SELECT SUM(amount) FROM other_costs WHERE user_id = $1), 0) +
-        COALESCE((SELECT SUM(amount) FROM staffing_costs WHERE user_id = $1), 0) AS total_cost
+        COALESCE((SELECT SUM(amount) FROM purchase_order_items), 0) +
+        COALESCE((SELECT SUM(quantity_used * COALESCE((SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id), 0)) FROM production_order_items), 0) +
+        COALESCE((SELECT SUM(amount) FROM other_costs), 0) +
+        COALESCE((SELECT SUM(amount) FROM staffing_costs), 0) AS total_cost
     )
     SELECT 
       revenue.total_revenue,
       total_costs.total_cost,
       (revenue.total_revenue - total_costs.total_cost) AS gross_profit
     FROM revenue, total_costs;
-  `, [userId]);
+  `);
   return {
     total_revenue: result.rows[0].total_revenue || 0,
     total_cost: result.rows[0].total_cost || 0,
@@ -79,20 +69,18 @@ const getGrossProfit = async (userId) => {
   };
 };
 
-const getProfitMargin = async (userId) => {
+const getProfitMargin = async () => {
   const result = await db.query(`
     WITH revenue AS (
-      SELECT COALESCE(SUM(soi.amount), 0) AS total_revenue
-      FROM sales_order_items soi
-      JOIN sales_orders so ON soi.sales_order_id = so.id
-      WHERE so.user_id = $1
+      SELECT COALESCE(SUM(amount), 0) AS total_revenue
+      FROM sales_order_items
     ),
     total_costs AS (
       SELECT 
-        COALESCE((SELECT SUM(poi.amount) FROM purchase_order_items poi JOIN purchase_orders po ON poi.purchase_order_id = po.id WHERE po.user_id = $1), 0) +
-        COALESCE((SELECT SUM(poi.quantity_used * COALESCE(ii.price, 0)) FROM production_order_items poi JOIN production_orders po ON poi.production_order_id = po.id JOIN inventory_item ii ON poi.inventory_item_id = ii.id WHERE po.user_id = $1), 0) +
-        COALESCE((SELECT SUM(amount) FROM other_costs WHERE user_id = $1), 0) +
-        COALESCE((SELECT SUM(amount) FROM staffing_costs WHERE user_id = $1), 0) AS total_cost
+        COALESCE((SELECT SUM(amount) FROM purchase_order_items), 0) +
+        COALESCE((SELECT SUM(quantity_used * COALESCE((SELECT price FROM inventory_item WHERE id = production_order_items.inventory_item_id), 0)) FROM production_order_items), 0) +
+        COALESCE((SELECT SUM(amount) FROM other_costs), 0) +
+        COALESCE((SELECT SUM(amount) FROM staffing_costs), 0) AS total_cost
     ),
     gross_profit AS (
       SELECT 
@@ -107,26 +95,25 @@ const getProfitMargin = async (userId) => {
         ELSE (gross_profit.gross_profit / NULLIF(revenue.total_revenue, 0)) * 100
       END AS profit_margin
     FROM gross_profit, revenue;
-  `, [userId]);
+  `);
   return result.rows[0].profit_margin;
 };
 
-const getBreakEvenPoint = async (userId, itemName) => {
+const getBreakEvenPoint = async (itemName) => {
   try {
     const result = await db.query(`
       WITH sales_check AS (
         SELECT COUNT(*) > 0 AS has_sales
         FROM sales_order_items soi
         JOIN inventory_item ii ON soi.inventory_item_id = ii.id
-        JOIN sales_orders so ON soi.sales_order_id = so.id
-        WHERE ii.item_name = $2 AND so.user_id = $1
+        WHERE ii.item_name = $1
       ),
       fixed_costs AS (
         SELECT COALESCE(SUM(amount), 0) AS total_fixed_cost
         FROM (
-          SELECT amount FROM other_costs WHERE user_id = $1
+          SELECT amount FROM other_costs
           UNION ALL
-          SELECT amount FROM staffing_costs WHERE user_id = $1
+          SELECT amount FROM staffing_costs
         ) AS all_fixed_costs
       ),
       variable_costs_per_unit AS (
@@ -136,13 +123,12 @@ const getBreakEvenPoint = async (userId, itemName) => {
         JOIN production_orders po ON poi.production_order_id = po.id
         LEFT JOIN inventory_item ii ON poi.inventory_item_id = ii.id
         LEFT JOIN sales_order_items soi ON soi.inventory_item_id = ii.id
-        LEFT JOIN sales_orders so ON soi.sales_order_id = so.id
-        WHERE po.product_name = $2 AND po.user_id = $1 AND so.user_id = $1
+        WHERE po.product_name = $1
       ),
       price_per_unit AS (
         SELECT COALESCE(price, 0) AS price
         FROM inventory_item
-        WHERE item_name = $2 AND user_id = $1
+        WHERE item_name = $1
       )
       SELECT 
         CASE
@@ -151,7 +137,7 @@ const getBreakEvenPoint = async (userId, itemName) => {
           ELSE (fixed_costs.total_fixed_cost / NULLIF((price_per_unit.price - variable_costs_per_unit.variable_cost_per_unit), 0))
         END AS break_even_point_in_units
       FROM fixed_costs, variable_costs_per_unit, price_per_unit, sales_check;
-    `, [userId, itemName]);
+    `, [itemName]);
 
     console.log('Break-even point calculation result:', result.rows[0]);
 
