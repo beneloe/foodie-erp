@@ -1,6 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
 import Inventory from './components/Inventory';
 import AddInventoryItem from './components/AddInventoryItem';
 import AddPurchaseOrder from './components/AddPurchaseOrder';
@@ -25,7 +26,7 @@ function App() {
       <div style={{ margin: "30px"}}>
         <Router>
           <header>
-          <h1><Link to="/">Foodie ERP</Link></h1>
+            <h1><Link to="/">Foodie ERP</Link></h1>
           </header>
           <nav style={{ display: "flex", gap: "30px" }}>
             <Link to="/inventory">Inventory</Link>
@@ -39,20 +40,20 @@ function App() {
           <main>
             <Routes>
               <Route path="/" element={<KPIs />} />
-              <Route path="/inventory" element={<Inventory />} />
-              <Route path="inventory/create" element={<AddInventoryItem />} />
-              <Route path="/purchases" element={<PurchaseOrders />} />
-              <Route path="/purchases/create" element={<AddPurchaseOrder />} />
-              <Route path="/production" element={<ProductionOrders />} />
-              <Route path="/production/create" element={<AddProductionOrder />} />
-              <Route path='/sales' element={<SalesOrders />} />
-              <Route path='/sales/create' element={<AddSalesOrder />} />
-              <Route path='/service' element={<ServiceCosts />} />
-              <Route path='/service/create' element={<AddServiceCost />} />
-              <Route path='/other' element={<OtherCosts />} />
-              <Route path='/other/create' element={<AddOtherCost />} />
-              <Route path='/staffing' element={<StaffingCosts />} />
-              <Route path='/staffing/create' element={<AddStaffingCost />} />
+              <PrivateRoute path="/inventory" element={<Inventory />} />
+              <PrivateRoute path="/inventory/create" element={<AddInventoryItem />} />
+              <PrivateRoute path="/purchases" element={<PurchaseOrders />} />
+              <PrivateRoute path="/purchases/create" element={<AddPurchaseOrder />} />
+              <PrivateRoute path="/production" element={<ProductionOrders />} />
+              <PrivateRoute path="/production/create" element={<AddProductionOrder />} />
+              <PrivateRoute path="/sales" element={<SalesOrders />} />
+              <PrivateRoute path="/sales/create" element={<AddSalesOrder />} />
+              <PrivateRoute path="/service" element={<ServiceCosts />} />
+              <PrivateRoute path="/service/create" element={<AddServiceCost />} />
+              <PrivateRoute path="/other" element={<OtherCosts />} />
+              <PrivateRoute path="/other/create" element={<AddOtherCost />} />
+              <PrivateRoute path="/staffing" element={<StaffingCosts />} />
+              <PrivateRoute path="/staffing/create" element={<AddStaffingCost />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
             </Routes>
@@ -60,7 +61,7 @@ function App() {
         </Router>
       </div>
     </AuthProvider>
- );
+  );
 }
 
 export default App;

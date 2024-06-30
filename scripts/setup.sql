@@ -232,19 +232,6 @@ BEGIN
     IF TG_TABLE_NAME = 'purchase_order_items' THEN
       UPDATE inventory_item
       SET stock = stock + NEW.quantity
-<<<<<<< HEAD
-      WHERE id = NEW.inventory_item_id AND user_id = (SELECT user_id FROM purchase_orders WHERE id = NEW.purchase_order_id);
-    ELSIF TG_TABLE_NAME = 'production_order_items' THEN
-      UPDATE inventory_item
-      SET stock = stock - NEW.quantity_used
-      WHERE id = NEW.inventory_item_id AND user_id = (SELECT user_id FROM production_orders WHERE id = NEW.production_order_id);
-    ELSIF TG_TABLE_NAME = 'production_orders' THEN
-      UPDATE inventory_item
-      SET stock = stock + NEW.quantity
-      WHERE item_name = NEW.product_name AND user_id = NEW.user_id;
-    ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
-      IF (SELECT stock FROM inventory_item WHERE id = NEW.inventory_item_id AND user_id = (SELECT user_id FROM sales_orders WHERE id = NEW.sales_order_id)) < NEW.quantity THEN
-=======
       WHERE id = NEW.inventory_item_id;
     ELSIF TG_TABLE_NAME = 'production_order_items' THEN
       UPDATE inventory_item
@@ -256,7 +243,6 @@ BEGIN
       WHERE item_name = NEW.product_name;
     ELSIF TG_TABLE_NAME = 'sales_order_items' THEN
       IF (SELECT stock FROM inventory_item WHERE id = NEW.inventory_item_id) < NEW.quantity THEN
->>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
         RAISE EXCEPTION 'Not enough stock for item %', NEW.inventory_item_id;
       ELSE
         UPDATE inventory_item
