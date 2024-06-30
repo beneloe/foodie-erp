@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { createPurchaseOrder, getAllPurchaseOrders } = require('../models/PurchaseOrder');
 const { createPurchaseOrderItem, getAllPurchaseOrderItems } = require('../models/PurchaseOrderItem');
+const auth = require('../middleware/auth');
 const router = express.Router();
 
 // validation middleware
@@ -27,10 +28,10 @@ const validatePurchaseOrder = [
   },
 ];
 
-router.post('/add', validatePurchaseOrder, async (req, res) => {
+router.post('/add', auth, validatePurchaseOrder, async (req, res) => {
   const { date, vendor, amount, paid, received, items } = req.body;
   try {
-    const purchaseOrder = await createPurchaseOrder(date, vendor, amount, paid, received);
+    const purchaseOrder = await createPurchaseOrder(req.user.id, date, vendor, amount, paid, received);
     for (const item of items) {
       await createPurchaseOrderItem(purchaseOrder.id, item.inventory_item_id, item.quantity, item.unit, item.unit_price, item.amount);
     }
@@ -41,10 +42,10 @@ router.post('/add', validatePurchaseOrder, async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
-    const purchaseOrders = await getAllPurchaseOrders();
-    const purchaseOrderItems = await getAllPurchaseOrderItems();
+    const purchaseOrders = await getAllPurchaseOrders(req.user.id);
+    const purchaseOrderItems = await getAllPurchaseOrderItems(req.user.id);
     res.status(200).json({ purchaseOrders, purchaseOrderItems });
   } catch (error) {
     console.error('Error fetching purchase orders:', error);
