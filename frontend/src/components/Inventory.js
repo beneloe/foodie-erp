@@ -24,7 +24,6 @@ const Inventory = () => {
     <div style={{ marginTop: '50px' }}>
       <h2>Inventory</h2>
       {error && <div style={{ color: 'red' }}>{error}</div>}
-      <input type="text" placeholder="Search Inventory..." />
       <table>
         <thead>
           <tr>
