@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-=======
 import React, { useState } from 'react';
->>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
 
 const AddInventoryItem = () => {
   const [itemName, setItemName] = useState('');
@@ -13,11 +8,6 @@ const AddInventoryItem = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-<<<<<<< HEAD
-  const { token } = useContext(AuthContext);
-
-=======
->>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
   const validateInput = () => {
     if (!itemName || !stock || !unit || !price) {
       return 'All fields are required.';
@@ -63,10 +53,6 @@ const AddInventoryItem = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-<<<<<<< HEAD
-        'Authorization': `Bearer ${token}`,
-=======
->>>>>>> 001aeb5838eb02391bd6779f9ef63ee593bbfa92
       },
       body: JSON.stringify(newItem),
     })
