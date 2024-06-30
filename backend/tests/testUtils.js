@@ -1,4 +1,4 @@
-const pool = require('../config/test.db');
+const pool = require('../config/db');
 
 const setupDatabase = async () => {
   await pool.query(`

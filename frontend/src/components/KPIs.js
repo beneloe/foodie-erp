@@ -38,8 +38,8 @@ const Dashboard = () => {
     fetch('/api/inventory')
       .then(response => response.json())
       .then(data => {
-        setInventoryItems(data);
-        if (data.length > 0) {
+        setInventoryItems(Array.isArray(data) ? data : []);
+        if (Array.isArray(data) && data.length > 0) {
           setSelectedItem(data[0].item_name);
         }
       })
@@ -80,7 +80,7 @@ const Dashboard = () => {
           }));
         });
     }
-  }, [selectedItem, totalCosts, revenue]);  // Add totalCosts and revenue as dependencies
+  }, [selectedItem, totalCosts, revenue]);
 
   const handleItemChange = (event) => {
     setSelectedItem(event.target.value);
@@ -108,8 +108,8 @@ const Dashboard = () => {
       <div>
         <h3>Profit Margin</h3>
         <p>
-          {profitMargin !== null && !isNaN(profitMargin) 
-            ? `${profitMargin.toFixed(2)}%` 
+          {profitMargin !== null && !isNaN(profitMargin)
+            ? `${profitMargin.toFixed(2)}%`
             : 'Not available'}
         </p>
       </div>
@@ -120,9 +120,9 @@ const Dashboard = () => {
             <option key={item.id} value={item.item_name}>{item.item_name}</option>
           ))}
         </select>
-        <p>{breakEvenPoints[selectedItem] !== undefined ? 
-            (breakEvenPoints[selectedItem] === 'Not applicable' ? 'Not applicable (no sales)' : breakEvenPoints[selectedItem]) 
-            : 'Calculating...'}</p>
+        <p>{breakEvenPoints[selectedItem] !== undefined ?
+          (breakEvenPoints[selectedItem] === 'Not applicable' ? 'Not applicable (no sales)' : breakEvenPoints[selectedItem])
+          : 'Calculating...'}</p>
       </div>
     </div>
   );
