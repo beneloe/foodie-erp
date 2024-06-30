@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const OtherCosts = () => {
   const [otherCosts, setOtherCosts] = useState([]);
   const [otherCostItems, setOtherCostItems] = useState([]);
+
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const AddOtherCost = () => {
   const [date, setDate] = useState('');
@@ -7,6 +8,8 @@ const AddOtherCost = () => {
   const [status, setStatus] = useState('done');
   const [items, setItems] = useState([{ line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
   const [errors, setErrors] = useState([]);
+
+  const { token } = useContext(AuthContext);
 
   const handleAddItem = () => {
     setItems([...items, { line_item: '', quantity: '', unit: '', unit_price: '', amount: '' }]);
@@ -65,6 +68,7 @@ const AddOtherCost = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(newOrder),
     })

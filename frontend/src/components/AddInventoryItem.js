@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 const AddInventoryItem = () => {
   const [itemName, setItemName] = useState('');
@@ -7,6 +8,8 @@ const AddInventoryItem = () => {
   const [price, setPrice] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const { token } = useContext(AuthContext);
 
   const validateInput = () => {
     if (!itemName || !stock || !unit || !price) {
@@ -53,6 +56,7 @@ const AddInventoryItem = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(newItem),
     })

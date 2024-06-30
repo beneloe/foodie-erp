@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Inventory = () => {
   const [items, setItems] = useState([]);
   const [error, setError] = useState('');
+
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     fetch('/api/inventory')
