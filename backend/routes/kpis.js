@@ -38,11 +38,23 @@ router.get('/profit-margin', async (req, res) => {
   }
 });
 
-router.get('/break-even-point', async (req, res) => {
+router.get('/break-even-point/:itemName', async (req, res) => {
   try {
-    const breakEvenPoint = await kpis.getBreakEvenPoint();
-    res.json({ breakEvenPoint });
+    const { itemName } = req.params;
+    
+    if (!itemName || itemName.trim() === '') {
+      return res.status(400).json({ error: 'Item name is required' });
+    }
+
+    const breakEvenPoint = await kpis.getBreakEvenPoint(itemName);
+    
+    if (breakEvenPoint === null) {
+      res.status(404).json({ error: 'Break-even point could not be calculated for this item' });
+    } else {
+      res.json({ breakEvenPoint });
+    }
   } catch (error) {
+    console.error('Error calculating break-even point:', error);
     res.status(500).json({ error: 'Failed to fetch break-even point' });
   }
 });
